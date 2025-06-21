@@ -19,6 +19,7 @@ namespace CompanyService.Infrastructure
             });
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

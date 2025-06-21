@@ -7,6 +7,7 @@ using System.Text;
 using FluentValidation;
 using System.Reflection;
 using Google.Authenticator;
+using CompanyService.Core.Validators.Company;
 
 namespace CompanyService.Core
 {
@@ -18,7 +19,7 @@ namespace CompanyService.Core
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "BaseApi", Version = "v1" });
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "CompanyService", Version = "v1" });
 
                 // Agrega la autorización en Swagger
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -65,6 +66,7 @@ namespace CompanyService.Core
             services.AddScoped<IRedisService, RedisService>();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddHttpContextAccessor();
+            services.AddValidatorsFromAssemblyContaining<CreateCompanyRequestValidator>();
 
             return services;
         }
