@@ -1,13 +1,16 @@
 ﻿using CompanyService.Core.Interfaces;
 using CompanyService.Core.Services;
+using CompanyService.Core.Validators.Company;
+using CompanyService.Core.Validators.Customer;
+using CompanyService.Core.Validators.Product;
+using CompanyService.Core.Validators.Sale;
+using FluentValidation;
+using Google.Authenticator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
-using FluentValidation;
 using System.Reflection;
-using Google.Authenticator;
-using CompanyService.Core.Validators.Company;
+using System.Text;
 
 namespace CompanyService.Core
 {
@@ -64,10 +67,19 @@ namespace CompanyService.Core
 
             services.AddAuthorization();
             services.AddScoped<IRedisService, RedisService>();
+            services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<IDashboardService, DashboardService>();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddHttpContextAccessor();
-            services.AddValidatorsFromAssemblyContaining<CreateCompanyRequestValidator>();
 
+            // Registrar TODOS los validadores
+            services.AddValidatorsFromAssemblyContaining<CreateCompanyRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateProductRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateCustomerRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateProductCategoryRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateSupplierRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreatePurchaseRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateSaleRequestValidator>();
             return services;
         }
     }

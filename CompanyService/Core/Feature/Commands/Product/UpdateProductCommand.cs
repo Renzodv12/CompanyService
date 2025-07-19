@@ -1,0 +1,21 @@
+﻿using MediatR;
+
+namespace CompanyService.Core.Feature.Commands.Product
+{
+    public class UpdateProductCommand : IRequest<bool>
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public decimal Cost { get; set; }
+        public int MinStock { get; set; }
+        public int MaxStock { get; set; }
+        public string Unit { get; set; }
+        public decimal Weight { get; set; }
+        public Guid CategoryId { get; set; }
+        public bool IsActive { get; set; }
+        public Guid CompanyId { get; set; }
+        public string UserId { get; set; }
+    }
+}

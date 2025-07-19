@@ -29,13 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Entities\" />
-    <Folder Include="Core\Enums\" />
-    <Folder Include="Core\Feature\Commands\" />
     <Folder Include="Core\Utils\" />
-    <Folder Include="Core\Validators\" />
     <Folder Include="Infrastructure\Configuration\" />
-    <Folder Include="Infrastructure\Context\Config\" />
   </ItemGroup>
 
 </Project>

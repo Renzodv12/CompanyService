@@ -30,5 +30,12 @@ app.UseAuthorization();
 app.UseMiddleware<JwtMiddleware>();
 
 app.MapCompanyEndpoints();
-
+app.MapProductEndpoints();
+app.MapProductCategoryEndpoints();
+app.MapCustomerEndpoints();
+app.MapSaleEndpoints();
+app.MapSupplierEndpoints();
+app.MapPurchaseEndpoints();
+app.MapDashboardEndpoints();
+app.MapReportEndpoints();
 app.Run();
