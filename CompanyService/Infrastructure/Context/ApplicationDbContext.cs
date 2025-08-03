@@ -37,6 +37,10 @@ namespace CompanyService.Infrastructure.Context
         // Reportes
         public DbSet<Report> Reports => Set<Report>();
         public DbSet<ReportExecution> ReportExecutions => Set<ReportExecution>();
+
+        //Events
+        public DbSet<Event> Events => Set<Event>();
+        public DbSet<EventAttendee> EventAttendees => Set<EventAttendee>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

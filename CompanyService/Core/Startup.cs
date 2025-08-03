@@ -2,6 +2,7 @@
 using CompanyService.Core.Services;
 using CompanyService.Core.Validators.Company;
 using CompanyService.Core.Validators.Customer;
+using CompanyService.Core.Validators.Event;
 using CompanyService.Core.Validators.Product;
 using CompanyService.Core.Validators.Sale;
 using FluentValidation;
@@ -80,6 +81,8 @@ namespace CompanyService.Core
             services.AddValidatorsFromAssemblyContaining<CreateSupplierRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<CreatePurchaseRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<CreateSaleRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateEventRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<UpdateEventRequestValidator>();
             return services;
         }
     }
