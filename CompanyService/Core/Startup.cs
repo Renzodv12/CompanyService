@@ -5,6 +5,7 @@ using CompanyService.Core.Validators.Customer;
 using CompanyService.Core.Validators.Event;
 using CompanyService.Core.Validators.Product;
 using CompanyService.Core.Validators.Sale;
+using CompanyService.Core.Validators.Task;
 using FluentValidation;
 using Google.Authenticator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -83,6 +84,14 @@ namespace CompanyService.Core
             services.AddValidatorsFromAssemblyContaining<CreateSaleRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<CreateEventRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<UpdateEventRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateTaskRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<UpdateTaskRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateColumnRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<UpdateColumnRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<DragTaskRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<AddCommentRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateSubtaskRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<UpdateSubtaskRequestValidator>();
             return services;
         }
     }

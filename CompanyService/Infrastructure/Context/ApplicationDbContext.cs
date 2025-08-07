@@ -41,6 +41,14 @@ namespace CompanyService.Infrastructure.Context
         //Events
         public DbSet<Event> Events => Set<Event>();
         public DbSet<EventAttendee> EventAttendees => Set<EventAttendee>();
+        // Tasks
+        public DbSet<CompanyService.Core.Entities.Task> Tasks => Set<CompanyService.Core.Entities.Task>();
+        public DbSet<TaskColumn> TaskColumns => Set<TaskColumn>();
+        public DbSet<TaskLabel> TaskLabels => Set<TaskLabel>();
+        public DbSet<TaskAssignee> TaskAssignees => Set<TaskAssignee>();
+        public DbSet<TaskAttachment> TaskAttachments => Set<TaskAttachment>();
+        public DbSet<TaskSubtask> TaskSubtasks => Set<TaskSubtask>();
+        public DbSet<TaskComment> TaskComments => Set<TaskComment>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

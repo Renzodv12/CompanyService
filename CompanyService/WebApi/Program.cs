@@ -38,5 +38,6 @@ app.MapSupplierEndpoints();
 app.MapPurchaseEndpoints();
 app.MapDashboardEndpoints();
 app.MapReportEndpoints();
-app.MapEventEndpoints(); 
+app.MapEventEndpoints();
+app.MapTaskEndpoints();
 app.Run();
