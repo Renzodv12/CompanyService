@@ -1,4 +1,4 @@
-﻿using CompanyService.Core.Entities;
+using CompanyService.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanyService.Infrastructure.Context
@@ -49,12 +49,30 @@ namespace CompanyService.Infrastructure.Context
         public DbSet<TaskAttachment> TaskAttachments => Set<TaskAttachment>();
         public DbSet<TaskSubtask> TaskSubtasks => Set<TaskSubtask>();
         public DbSet<TaskComment> TaskComments => Set<TaskComment>();
+        
+        // Menús
+        public DbSet<Menu> Menus => Set<Menu>();
+        public DbSet<CompanyMenuConfiguration> CompanyMenuConfigurations => Set<CompanyMenuConfiguration>();
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            
+            // Configure DateTime properties to use UTC for PostgreSQL compatibility
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(DateTime) || property.ClrType == typeof(DateTime?))
+                    {
+                        property.SetValueConverter(new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime, DateTime>(
+                            v => v.Kind == DateTimeKind.Unspecified ? DateTime.SpecifyKind(v, DateTimeKind.Utc) : v.ToUniversalTime(),
+                            v => DateTime.SpecifyKind(v, DateTimeKind.Utc)));
+                    }
+                }
+            }
+            
             base.OnModelCreating(modelBuilder);
-
-
         }
     }
 }

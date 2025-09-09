@@ -3,6 +3,7 @@ using System;
 using CompanyService.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CompanyService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250817170413_MakeImageUrlAndBarcodeNullable")]
+    partial class MakeImageUrlAndBarcodeNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,47 +104,6 @@ namespace CompanyService.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies", (string)null);
-                });
-
-            modelBuilder.Entity("CompanyService.Core.Entities.CompanyMenuConfiguration", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
-
-                    b.Property<bool>("IsEnabled")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.Property<int>("MenuId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("IsEnabled");
-
-                    b.HasIndex("MenuId");
-
-                    b.HasIndex("CompanyId", "MenuId")
-                        .IsUnique();
-
-                    b.ToTable("CompanyMenuConfigurations");
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Customer", b =>
@@ -355,61 +317,6 @@ namespace CompanyService.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("JournalEntries", (string)null);
-                });
-
-            modelBuilder.Entity("CompanyService.Core.Entities.Menu", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<string>("Icon")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Route")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsActive");
-
-                    b.HasIndex("Order");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("Menus");
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Permission", b =>
@@ -1355,25 +1262,6 @@ namespace CompanyService.Migrations
                     b.Navigation("ParentAccount");
                 });
 
-            modelBuilder.Entity("CompanyService.Core.Entities.CompanyMenuConfiguration", b =>
-                {
-                    b.HasOne("CompanyService.Core.Entities.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CompanyService.Core.Entities.Menu", "Menu")
-                        .WithMany("CompanyConfigurations")
-                        .HasForeignKey("MenuId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
-                    b.Navigation("Menu");
-                });
-
             modelBuilder.Entity("CompanyService.Core.Entities.Customer", b =>
                 {
                     b.HasOne("CompanyService.Core.Entities.Company", "Company")
@@ -1424,16 +1312,6 @@ namespace CompanyService.Migrations
                     b.Navigation("Account");
 
                     b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("CompanyService.Core.Entities.Menu", b =>
-                {
-                    b.HasOne("CompanyService.Core.Entities.Menu", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Product", b =>
@@ -1759,13 +1637,6 @@ namespace CompanyService.Migrations
             modelBuilder.Entity("CompanyService.Core.Entities.Event", b =>
                 {
                     b.Navigation("EventAttendees");
-                });
-
-            modelBuilder.Entity("CompanyService.Core.Entities.Menu", b =>
-                {
-                    b.Navigation("Children");
-
-                    b.Navigation("CompanyConfigurations");
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Permission", b =>

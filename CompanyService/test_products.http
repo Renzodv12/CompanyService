@@ -1,0 +1,138 @@
+### Test Product Endpoints with ImageUrl and Barcode
+### Note: Replace {companyId} with a valid company GUID and add Authorization header
+
+### 1. Create Product with all fields (including ImageUrl and Barcode)
+POST http://localhost:5024/companies/{companyId}/products
+Authorization: Bearer {your-jwt-token}
+Content-Type: application/json
+
+{
+  "name": "Producto Test Completo",
+  "description": "Producto de prueba con todos los campos",
+  "price": 99.99,
+  "stock": 50,
+  "categoryId": 1,
+  "barcode": "1234567890123",
+  "imageUrl": "https://example.com/images/producto-test.jpg"
+}
+
+### 2. Create Product without optional fields (ImageUrl and Barcode)
+POST http://localhost:5024/companies/{companyId}/products
+Authorization: Bearer {your-jwt-token}
+Content-Type: application/json
+
+{
+  "name": "Producto Test Básico",
+  "description": "Producto de prueba sin campos opcionales",
+  "price": 49.99,
+  "stock": 25,
+  "categoryId": 1
+}
+
+### 3. Create Product with only ImageUrl
+POST http://localhost:5024/companies/{companyId}/products
+Authorization: Bearer {your-jwt-token}
+Content-Type: application/json
+
+{
+  "name": "Producto Test Solo ImageUrl",
+  "description": "Producto de prueba solo con ImageUrl",
+  "price": 75.50,
+  "stock": 30,
+  "categoryId": 1,
+  "imageUrl": "https://example.com/images/producto-solo-imagen.jpg"
+}
+
+### 4. Create Product with only Barcode
+POST http://localhost:5024/companies/{companyId}/products
+Authorization: Bearer {your-jwt-token}
+Content-Type: application/json
+
+{
+  "name": "Producto Test Solo Barcode",
+  "description": "Producto de prueba solo con Barcode",
+  "price": 35.25,
+  "stock": 15,
+  "categoryId": 1,
+  "barcode": "9876543210987"
+}
+
+### 5. Update Product with ImageUrl and Barcode
+PUT http://localhost:5024/companies/{companyId}/products/{productId}
+Authorization: Bearer {your-jwt-token}
+Content-Type: application/json
+
+{
+  "name": "Producto Actualizado Completo",
+  "description": "Producto actualizado con todos los campos",
+  "price": 129.99,
+  "stock": 75,
+  "categoryId": 1,
+  "barcode": "1111222233334",
+  "imageUrl": "https://example.com/images/producto-actualizado.jpg"
+}
+
+### 6. Update Product removing optional fields (set to null)
+PUT http://localhost:5024/companies/{companyId}/products/{productId}
+Authorization: Bearer {your-jwt-token}
+Content-Type: application/json
+
+{
+  "name": "Producto Sin Opcionales",
+  "description": "Producto sin campos opcionales",
+  "price": 89.99,
+  "stock": 40,
+  "categoryId": 1,
+  "barcode": null,
+  "imageUrl": null
+}
+
+### 7. Update Product with only ImageUrl
+PUT http://localhost:5024/companies/{companyId}/products/{productId}
+Authorization: Bearer {your-jwt-token}
+Content-Type: application/json
+
+{
+  "name": "Producto Solo Imagen",
+  "description": "Producto solo con imagen",
+  "price": 65.00,
+  "stock": 20,
+  "categoryId": 1,
+  "imageUrl": "https://example.com/images/nueva-imagen.jpg"
+}
+
+### 8. Get Product by ID to verify changes
+GET http://localhost:5024/companies/{companyId}/products/{productId}
+Authorization: Bearer {your-jwt-token}
+
+### 9. Get all Products to see the list
+GET http://localhost:5024/companies/{companyId}/products
+Authorization: Bearer {your-jwt-token}
+
+### 10. Test validation - Create Product with invalid barcode (too short)
+POST http://localhost:5024/companies/{companyId}/products
+Authorization: Bearer {your-jwt-token}
+Content-Type: application/json
+
+{
+  "name": "Producto Test Validación",
+  "description": "Producto para probar validación de barcode",
+  "price": 25.99,
+  "stock": 10,
+  "categoryId": 1,
+  "barcode": "123"
+}
+
+### 11. Test validation - Create Product with invalid ImageUrl
+POST http://localhost:5024/companies/{companyId}/products
+Authorization: Bearer {your-jwt-token}
+Content-Type: application/json
+
+{
+  "name": "Producto Test Validación URL",
+  "description": "Producto para probar validación de ImageUrl",
+  "price": 25.99,
+  "stock": 10,
+  "categoryId": 1,
+  "imageUrl": "invalid-url"
+}

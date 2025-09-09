@@ -1,4 +1,4 @@
-﻿using CompanyService.Core.Entities;
+using CompanyService.Core.Entities;
 using CompanyService.Core.Feature.Querys.Company;
 using CompanyService.Core.Interfaces;
 using CompanyService.Core.Models.Company;
@@ -10,24 +10,15 @@ namespace CompanyService.Core.Feature.Handler.Company
     public class GetCompanyDetailQueryHandler : IRequestHandler<GetCompanyDetailQuery, CompanyWithPermissionsDto?>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IRedisService _redisService;
 
-        public GetCompanyDetailQueryHandler(IUnitOfWork unitOfWork, IRedisService redisService)
+        public GetCompanyDetailQueryHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _redisService = redisService;
         }
 
         public async Task<CompanyWithPermissionsDto?> Handle(GetCompanyDetailQuery request, CancellationToken cancellationToken)
         {
-            string cacheKey = $"company:{request.CompanyId}:user:{request.UserId}";
-
-            // 1. Verificar si está en caché
-            var cached = await _redisService.GetAsync<CompanyWithPermissionsDto>(cacheKey);
-            if (cached != null)
-                return cached;
-
-            // 2. Validar acceso
+            // Validar acceso
             var userCompany = await _unitOfWork.Repository<UserCompany>()
                 .FirstOrDefaultAsync(uc => uc.UserId == request.UserId && uc.CompanyId == request.CompanyId);
 
@@ -66,8 +57,6 @@ namespace CompanyService.Core.Feature.Handler.Company
                     };
                 }).ToList()
             };
-
-            await _redisService.SetAsync(cacheKey, result, TimeSpan.FromMinutes(60));
 
             return result;
         }

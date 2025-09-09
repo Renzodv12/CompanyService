@@ -1,4 +1,4 @@
-﻿using CompanyService.Core.Entities;
+using CompanyService.Core.Entities;
 using CompanyService.Core.Exceptions;
 using CompanyService.Core.Feature.Commands.Product;
 using CompanyService.Core.Interfaces;
@@ -49,6 +49,14 @@ namespace CompanyService.Core.Feature.Handler.Product
             product.Weight = request.Weight;
             product.CategoryId = request.CategoryId;
             product.IsActive = request.IsActive;
+            
+            // Actualizar campos opcionales solo si se proporcionan
+            if (request.Barcode != null)
+                product.Barcode = request.Barcode;
+            
+            if (request.ImageUrl != null)
+                product.ImageUrl = request.ImageUrl;
+            
             product.LastModifiedAt = DateTime.UtcNow;
 
             _unitOfWork.Repository<CompanyService.Core.Entities.Product>().Update(product);

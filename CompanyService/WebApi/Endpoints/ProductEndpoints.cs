@@ -1,4 +1,4 @@
-﻿using CompanyService.Core.Feature.Commands.Product;
+using CompanyService.Core.Feature.Commands.Product;
 using CompanyService.Core.Feature.Querys.Product;
 using CompanyService.Core.Models.Product;
 using CompanyService.WebApi.Extensions;
@@ -83,6 +83,7 @@ namespace CompanyService.WebApi.Endpoints
                 Unit = request.Unit,
                 Weight = request.Weight,
                 CategoryId = request.CategoryId,
+                ImageUrl = request.ImageUrl,
                 CompanyId = companyId,
                 UserId = claims.UserId
             };
@@ -221,6 +222,8 @@ namespace CompanyService.WebApi.Endpoints
                 Weight = request.Weight,
                 CategoryId = request.CategoryId,
                 IsActive = request.IsActive,
+                Barcode = request.Barcode,
+                ImageUrl = request.ImageUrl,
                 CompanyId = companyId,
                 UserId = claims.UserId
             };

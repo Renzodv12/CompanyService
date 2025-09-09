@@ -1,39 +1,36 @@
-﻿using CompanyService.Core.Feature.Querys.Security;
+using CompanyService.Core.Feature.Querys.Security;
+using CompanyService.Core.Interfaces;
 using MediatR;
-using StackExchange.Redis;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace CompanyService.Core.Feature.Handler.Security
 {
     public class IsTokenRevokedHandler : IRequestHandler<IsTokenRevokedQuery, bool>
     {
-        private readonly IDatabase _database;
         private readonly ILogger<IsTokenRevokedHandler> _logger;
+        private readonly IRedisService _redisService;
 
-        public IsTokenRevokedHandler(IConnectionMultiplexer redis, ILogger<IsTokenRevokedHandler> logger)
+        public IsTokenRevokedHandler(ILogger<IsTokenRevokedHandler> logger, IRedisService redisService)
         {
-            _database = redis.GetDatabase();
             _logger = logger;
+            _redisService = redisService;
         }
 
         public async Task<bool> Handle(IsTokenRevokedQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                // Verificar si el token específico está revocado
-                var tokenKey = $"revoked_token:{request.Jti}";
-                var tokenExists = await _database.KeyExistsAsync(tokenKey);
-
-                if (tokenExists)
-                {
-                    return true;
-                }
-
-                return false;
+                // Verificar si el token está en la lista de tokens revocados en Redis
+                var revokedKey = $"revoked_token:{request.Jti}";
+                var isRevoked = await _redisService.KeyExistsAsync(revokedKey);
+                
+                return isRevoked;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al verificar si token {Jti} está revocado", request.Jti);
+                // En caso de error, por seguridad, consideramos el token como no revocado
+                // para no bloquear usuarios legítimos
                 return false;
             }
         }

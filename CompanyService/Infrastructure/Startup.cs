@@ -1,4 +1,4 @@
-﻿using CompanyService.Core.Interfaces;
+using CompanyService.Core.Interfaces;
 using CompanyService.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -12,14 +12,16 @@ namespace CompanyService.Infrastructure
             services.AddHealthChecks();
             services.AddDbContext<ApplicationDbContext>(options =>
                      options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-            services.AddSingleton<IConnectionMultiplexer>(sp =>
-            {
-                var connectionString = configuration.GetConnectionString("Redis") ?? "localhost:6379";
-                return ConnectionMultiplexer.Connect(connectionString);
-            });
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            // Configuración de Redis
+            services.AddSingleton<IConnectionMultiplexer>(provider =>
+            {
+                var connectionString = configuration.GetConnectionString("Redis");
+                return ConnectionMultiplexer.Connect(connectionString);
+            });
 
             return services;
         }

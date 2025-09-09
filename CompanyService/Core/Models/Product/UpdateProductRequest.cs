@@ -12,5 +12,7 @@
         public decimal Weight { get; set; }
         public Guid CategoryId { get; set; }
         public bool IsActive { get; set; }
+        public string? Barcode { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

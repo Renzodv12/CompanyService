@@ -1,4 +1,4 @@
-﻿using CompanyService.Core.Enums;
+using CompanyService.Core.Enums;
 
 namespace CompanyService.Core.Entities
 {
@@ -8,7 +8,7 @@ namespace CompanyService.Core.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public string SKU { get; set; } // Código único del producto
-        public string Barcode { get; set; }
+        public string? Barcode { get; set; }
         public decimal Price { get; set; }
         public decimal Cost { get; set; }
         public int Stock { get; set; }
@@ -18,7 +18,7 @@ namespace CompanyService.Core.Entities
         public ProductType Type { get; set; } // Producto, Servicio
         public string Unit { get; set; } // Unidad de medida (kg, unidad, litro, etc.)
         public decimal Weight { get; set; }
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public Guid CategoryId { get; set; }
         public Guid CompanyId { get; set; }

@@ -1,4 +1,4 @@
-﻿using CompanyService.Core.Interfaces;
+using CompanyService.Core.Interfaces;
 using CompanyService.Core.Services;
 using CompanyService.Core.Validators.Company;
 using CompanyService.Core.Validators.Customer;
@@ -68,15 +68,17 @@ namespace CompanyService.Core
             });
 
             services.AddAuthorization();
-            services.AddScoped<IRedisService, RedisService>();
             services.AddScoped<IReportService, ReportService>();
             services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<IRedisService, RedisService>();
+            services.AddScoped<IMenuService, MenuService>();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddHttpContextAccessor();
 
             // Registrar TODOS los validadores
             services.AddValidatorsFromAssemblyContaining<CreateCompanyRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<CreateProductRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<UpdateProductRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<CreateCustomerRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<CreateProductCategoryRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<CreateSupplierRequestValidator>();

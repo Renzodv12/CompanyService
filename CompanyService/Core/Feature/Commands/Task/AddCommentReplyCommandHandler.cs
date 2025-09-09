@@ -1,4 +1,4 @@
-﻿using CompanyService.Core.Entities;
+using CompanyService.Core.Entities;
 using CompanyService.Core.Exceptions;
 using CompanyService.Core.Interfaces;
 using MediatR;
@@ -8,12 +8,10 @@ namespace CompanyService.Core.Feature.Commands.Task
     public class AddCommentReplyCommandHandler : IRequestHandler<AddCommentReplyCommand, Guid>
     {
         private readonly IUnitOfWork _unitOfWork;
-       // private readonly IUserService _userService;
 
-        public AddCommentReplyCommandHandler(IUnitOfWork unitOfWork/*, IUserService userService*/)
+        public AddCommentReplyCommandHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-           // _userService = userService;
         }
 
         public async Task<Guid> Handle(AddCommentReplyCommand request, CancellationToken cancellationToken)
@@ -37,18 +35,15 @@ namespace CompanyService.Core.Feature.Commands.Task
             if (task == null)
                 throw new DefaultException("Tarea no encontrada.");
 
-            // Obtener información del usuario
-            //var userInfo = await _userService.GetCurrentUserInfoAsync(request.UserId);
-
             var reply = new TaskComment
             {
                 Id = Guid.NewGuid(),
                 TaskId = request.TaskId,
-                ParentCommentId = request.ParentCommentId, // Esto hace que sea un reply
+                ParentCommentId = request.ParentCommentId,
                 AuthorId = Guid.Parse(request.UserId),
-                AuthorName = /*userInfo?.Name ??*/ "Usuario Desconocido",
-                AuthorUsername = /*userInfo?.Username ??*/ "unknown.user",
-                AuthorAvatar = /*userInfo?.Avatar ??*/ "/assets/avatar.png",
+                AuthorName = "Usuario Desconocido",
+                AuthorUsername = "unknown.user",
+                AuthorAvatar = "/assets/avatar.png",
                 Content = request.Content,
                 CreatedAt = DateTime.UtcNow
             };

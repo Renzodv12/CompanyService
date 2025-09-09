@@ -1,4 +1,4 @@
-﻿using CompanyService.Core.Entities;
+using CompanyService.Core.Entities;
 using CompanyService.Core.Enums;
 using CompanyService.Core.Exceptions;
 using CompanyService.Core.Feature.Commands.Product;
@@ -54,6 +54,7 @@ namespace CompanyService.Core.Feature.Handler.Product
                 Unit = request.Unit,
                 Weight = request.Weight,
                 CategoryId = request.CategoryId,
+                ImageUrl = request.ImageUrl,
                 CompanyId = request.CompanyId,
                 Type = ProductType.Product,
                 IsActive = true,

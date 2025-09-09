@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 
 namespace CompanyService.Core.Feature.Commands.Product
 {
@@ -15,6 +15,8 @@ namespace CompanyService.Core.Feature.Commands.Product
         public decimal Weight { get; set; }
         public Guid CategoryId { get; set; }
         public bool IsActive { get; set; }
+        public string? Barcode { get; set; }
+        public string? ImageUrl { get; set; }
         public Guid CompanyId { get; set; }
         public string UserId { get; set; }
     }

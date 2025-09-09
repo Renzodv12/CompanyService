@@ -1,4 +1,4 @@
-﻿using CompanyService.Core.Entities;
+using CompanyService.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,11 +14,6 @@ namespace CompanyService.Infrastructure.Context.Config
             builder.Property(sm => sm.Reason).IsRequired().HasMaxLength(200);
             builder.Property(sm => sm.Reference).HasMaxLength(100);
             builder.Property(sm => sm.CreatedAt).HasDefaultValueSql("now()");
-
-            //builder.HasIndex(je => new { je.EntryNumber, je.CompanyId }).IsUnique();
-
-            //builder.HasOne(je => je.Account).WithMany(a => a.JournalEntries).HasForeignKey(je => je.AccountId);
-            //builder.HasOne(je => je.Company).WithMany().HasForeignKey(je => je.CompanyId);
         }
     }
 }
