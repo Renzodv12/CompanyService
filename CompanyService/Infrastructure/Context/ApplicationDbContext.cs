@@ -9,7 +9,8 @@ namespace CompanyService.Infrastructure.Context
             : base(options) { }
 
 
-        public DbSet<Company> Users => Set<Company>();
+        public DbSet<User> Users => Set<User>();
+        public DbSet<Company> Companies => Set<Company>();
         public DbSet<Role> Roles => Set<Role>();
         public DbSet<UserCompany> UserCompanys => Set<UserCompany>();
         public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
@@ -37,6 +38,13 @@ namespace CompanyService.Infrastructure.Context
         // Reportes
         public DbSet<Report> Reports => Set<Report>();
         public DbSet<ReportExecution> ReportExecutions => Set<ReportExecution>();
+        
+        // Reportes Dinámicos
+        public DbSet<ReportDefinition> ReportDefinitions => Set<ReportDefinition>();
+        public DbSet<ReportField> ReportFields => Set<ReportField>();
+        public DbSet<ReportFilter> ReportFilters => Set<ReportFilter>();
+        public DbSet<DynamicReportExecution> DynamicReportExecutions => Set<DynamicReportExecution>();
+        public DbSet<ReportAuditLog> ReportAuditLogs => Set<ReportAuditLog>();
 
         //Events
         public DbSet<Event> Events => Set<Event>();
