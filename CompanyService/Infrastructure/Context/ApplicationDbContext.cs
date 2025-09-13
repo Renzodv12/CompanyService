@@ -62,6 +62,41 @@ namespace CompanyService.Infrastructure.Context
         public DbSet<Menu> Menus => Set<Menu>();
         public DbSet<CompanyMenuConfiguration> CompanyMenuConfigurations => Set<CompanyMenuConfiguration>();
         
+        // Finance Module
+        public DbSet<AccountsReceivable> AccountsReceivables => Set<AccountsReceivable>();
+        public DbSet<AccountsReceivablePayment> AccountsReceivablePayments => Set<AccountsReceivablePayment>();
+        public DbSet<AccountsPayable> AccountsPayables => Set<AccountsPayable>();
+        public DbSet<AccountsPayablePayment> AccountsPayablePayments => Set<AccountsPayablePayment>();
+        public DbSet<BankAccount> BankAccounts => Set<BankAccount>();
+        public DbSet<BankTransaction> BankTransactions => Set<BankTransaction>();
+        public DbSet<CashFlow> CashFlows => Set<CashFlow>();
+        public DbSet<Budget> Budgets => Set<Budget>();
+        public DbSet<BudgetLine> BudgetLines => Set<BudgetLine>();
+        
+        // Advanced Inventory Module
+        public DbSet<Warehouse> Warehouses => Set<Warehouse>();
+        public DbSet<Batch> Batches => Set<Batch>();
+        public DbSet<PhysicalInventory> PhysicalInventories => Set<PhysicalInventory>();
+        public DbSet<ReorderPoint> ReorderPoints => Set<ReorderPoint>();
+        
+        // Procurement Module
+        public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
+        public DbSet<PurchaseOrderItem> PurchaseOrderItems => Set<PurchaseOrderItem>();
+        public DbSet<Quotation> Quotations => Set<Quotation>();
+        public DbSet<QuotationItem> QuotationItems => Set<QuotationItem>();
+        public DbSet<Approval> Approvals => Set<Approval>();
+        public DbSet<ApprovalLevel> ApprovalLevels => Set<ApprovalLevel>();
+        public DbSet<ApprovalLevelUser> ApprovalLevelUsers => Set<ApprovalLevelUser>();
+        public DbSet<GoodsReceipt> GoodsReceipts => Set<GoodsReceipt>();
+        public DbSet<GoodsReceiptItem> GoodsReceiptItems => Set<GoodsReceiptItem>();
+        
+        // CRM Module
+        public DbSet<Lead> Leads => Set<Lead>();
+        public DbSet<Opportunity> Opportunities => Set<Opportunity>();
+        public DbSet<Campaign> Campaigns => Set<Campaign>();
+        public DbSet<CampaignLead> CampaignLeads => Set<CampaignLead>();
+        public DbSet<CustomerTracking> CustomerTrackings => Set<CustomerTracking>();
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

@@ -1,11 +1,15 @@
 using CompanyService.Core.Interfaces;
 using CompanyService.Core.Services;
+using CompanyService.Services;
+using CompanyService.Infrastructure.Services;
 using CompanyService.Core.Validators.Company;
 using CompanyService.Core.Validators.Customer;
 using CompanyService.Core.Validators.Event;
 using CompanyService.Core.Validators.Product;
+using CompanyService.Core.Validators.Procurement;
 using CompanyService.Core.Validators.Sale;
 using CompanyService.Core.Validators.Task;
+using CompanyService.Core.Validators.CRM;
 using FluentValidation;
 using Google.Authenticator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -72,6 +76,27 @@ namespace CompanyService.Core
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IRedisService, RedisService>();
             services.AddScoped<IMenuService, MenuService>();
+            
+            // InventoryService Services
+            services.AddScoped<IWarehouseService, WarehouseService>();
+            services.AddScoped<IBatchService, BatchService>();
+            services.AddScoped<IPhysicalInventoryService, PhysicalInventoryService>();
+            services.AddScoped<IReorderPointService, ReorderPointService>();
+            
+            // Finance Services
+            services.AddScoped<IFinanceService, FinanceService>();
+            services.AddScoped<IBankReconciliationService, BankReconciliationService>();
+            services.AddScoped<ICashFlowService, CashFlowService>();
+            
+            // ProcurementService Services
+            services.AddScoped<IProcurementService, ProcurementService>();
+            
+            // CRM Services
+            services.AddScoped<ICRMService, CRMService>();
+            
+            // Dynamic Report Services
+            services.AddScoped<IDynamicReportService, DynamicReportService>();
+            
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddHttpContextAccessor();
 
@@ -94,6 +119,18 @@ namespace CompanyService.Core
             services.AddValidatorsFromAssemblyContaining<AddCommentRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<CreateSubtaskRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<UpdateSubtaskRequestValidator>();
+            
+            // Procurement Module Validators
+            services.AddValidatorsFromAssemblyContaining<CreatePurchaseOrderRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateQuotationRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateApprovalRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateGoodsReceiptRequestValidator>();
+            
+            // CRM Module Validators
+            services.AddValidatorsFromAssemblyContaining<CreateLeadDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateOpportunityDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateCampaignDtoValidator>();
+            
             return services;
         }
     }

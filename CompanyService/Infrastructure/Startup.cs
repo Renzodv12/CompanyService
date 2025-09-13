@@ -1,5 +1,6 @@
 using CompanyService.Core.Interfaces;
 using CompanyService.Infrastructure.Context;
+using CompanyService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -15,6 +16,23 @@ namespace CompanyService.Infrastructure
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
+            // InventoryService Repositories
+            services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+            services.AddScoped<IBatchRepository, BatchRepository>();
+            services.AddScoped<IPhysicalInventoryRepository, PhysicalInventoryRepository>();
+            services.AddScoped<IReorderPointRepository, ReorderPointRepository>();
+            
+            // ProcurementService Repositories
+            services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+            services.AddScoped<IPurchaseOrderItemRepository, PurchaseOrderItemRepository>();
+            services.AddScoped<IQuotationRepository, QuotationRepository>();
+            services.AddScoped<IQuotationItemRepository, QuotationItemRepository>();
+            services.AddScoped<IApprovalRepository, ApprovalRepository>();
+            services.AddScoped<IApprovalLevelRepository, ApprovalLevelRepository>();
+            services.AddScoped<IApprovalLevelUserRepository, ApprovalLevelUserRepository>();
+            services.AddScoped<IGoodsReceiptRepository, GoodsReceiptRepository>();
+            services.AddScoped<IGoodsReceiptItemRepository, GoodsReceiptItemRepository>();
 
             // Configuración de Redis
             services.AddSingleton<IConnectionMultiplexer>(provider =>

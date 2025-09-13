@@ -23,6 +23,18 @@ namespace CompanyService.Core.Entities
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
+        /// Primer nombre del usuario
+        /// </summary>
+        [MaxLength(50)]
+        public string FirstName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Apellido del usuario
+        /// </summary>
+        [MaxLength(50)]
+        public string LastName { get; set; } = string.Empty;
+
+        /// <summary>
         /// Email del usuario
         /// </summary>
         [Required]
