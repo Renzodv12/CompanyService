@@ -2,6 +2,7 @@ using CompanyService.Core.Interfaces;
 using CompanyService.Core.Services;
 using CompanyService.Services;
 using CompanyService.Infrastructure.Services;
+using CompanyService.Application.Services;
 using CompanyService.Core.Validators.Company;
 using CompanyService.Core.Validators.Customer;
 using CompanyService.Core.Validators.Event;
@@ -96,6 +97,9 @@ namespace CompanyService.Core
             
             // Dynamic Report Services
             services.AddScoped<IDynamicReportService, DynamicReportService>();
+            
+            // Company Management Services
+            services.AddScoped<ICompanyManagementService, CompanyManagementService>();
             
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddHttpContextAccessor();

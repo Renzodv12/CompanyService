@@ -1,5 +1,6 @@
 using CompanyService.Core.DTOs.DynamicReports;
 using CompanyService.Core.Entities;
+using CompanyService.Core.Enums;
 
 namespace CompanyService.Core.Interfaces
 {

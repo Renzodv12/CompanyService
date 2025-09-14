@@ -4,12 +4,13 @@ using CompanyService.Core.Enums;
 using CompanyService.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Text;
 using System.Text.Json;
 using System.Linq.Dynamic.Core;
 using CompanyService.Infrastructure.Context;
 using Task = System.Threading.Tasks.Task;
 using ExportFormatEnum = CompanyService.Core.Enums.ExportFormat;
-using ExportFormatDto = CompanyService.Core.DTOs.DynamicReports.ExportFormat;
+// using ExportFormatDto = CompanyService.Core.DTOs.DynamicReports.ExportFormat; // Removed - using enum directly
 
 namespace CompanyService.Infrastructure.Services
 {
@@ -356,7 +357,7 @@ namespace CompanyService.Infrastructure.Services
                     FiltersApplied = execution.FiltersApplied,
                     RowCount = execution.RowCount,
                     ExecutionDuration = execution.ExecutionDuration,
-                    ExportFormat = Enum.TryParse<ExportFormatDto>(execution.ExportFormat, out var format) ? format : null,
+                    ExportFormat = Enum.TryParse<ExportFormat>(execution.ExportFormat, out var format) ? format : null,
                     ExecutedAt = execution.ExecutedAt,
                     ExpiresAt = execution.ExpiresAt,
                     Data = data.Data,
@@ -438,7 +439,7 @@ namespace CompanyService.Infrastructure.Services
                 RowCount = execution.RowCount,
                 ExecutionDuration = execution.ExecutionDuration,
                 ErrorMessage = execution.ErrorMessage,
-                ExportFormat = Enum.TryParse<ExportFormatDto>(execution.ExportFormat, out var execFormat) ? execFormat : null,
+                ExportFormat = Enum.TryParse<ExportFormat>(execution.ExportFormat, out var execFormat) ? execFormat : null,
                 ExportFileName = execution.ExportFileName,
                 FileSizeBytes = execution.FileSizeBytes,
                 ExecutedAt = execution.ExecutedAt,
@@ -471,7 +472,7 @@ namespace CompanyService.Infrastructure.Services
                 Status = e.Status,
                 RowCount = e.RowCount,
                 ExecutionDuration = e.ExecutionDuration,
-                ExportFormat = Enum.TryParse<ExportFormatDto>(e.ExportFormat, out var listFormat) ? listFormat : null,
+                ExportFormat = Enum.TryParse<ExportFormat>(e.ExportFormat, out var listFormat) ? listFormat : null,
                 ExportFileName = e.ExportFileName,
                 FileSizeBytes = e.FileSizeBytes,
                 ExecutedAt = e.ExecutedAt,
@@ -479,10 +480,62 @@ namespace CompanyService.Infrastructure.Services
             });
         }
 
-        public async Task<byte[]> ExportReportAsync(Guid executionId, ExportFormatDto format, Guid companyId)
+        public async Task<byte[]> ExportReportAsync(Guid executionId, ExportFormat format, Guid companyId)
         {
-            // TODO: Implement export functionality
-            throw new NotImplementedException("Export functionality will be implemented in the next phase.");
+            var execution = await _context.DynamicReportExecutions
+                .Include(re => re.ReportDefinition)
+                .FirstOrDefaultAsync(re => re.Id == executionId && re.CompanyId == companyId);
+
+            if (execution == null)
+            {
+                throw new ArgumentException("Report execution not found.");
+            }
+
+            if (execution.Status != ReportExecutionStatus.Completed)
+            {
+                throw new InvalidOperationException("Report execution is not completed.");
+            }
+
+            // Re-execute the report to get fresh data for export
+            var reportData = await ExecuteDynamicQueryAsync(
+                execution.ReportDefinition, 
+                new List<ReportFilterValueDto>(), // For export, use empty filters or deserialize properly
+                1, 
+                int.MaxValue // Get all data for export
+            );
+
+            // Use ReportExportService if available, otherwise implement basic export
+            return format switch
+            {
+                ExportFormat.Json => System.Text.Encoding.UTF8.GetBytes(JsonSerializer.Serialize(reportData.Data, new JsonSerializerOptions { WriteIndented = true })),
+                ExportFormat.Csv => ExportToCsv(reportData.Data),
+                _ => throw new NotSupportedException($"Export format {format} is not yet supported.")
+            };
+        }
+
+        private byte[] ExportToCsv(List<Dictionary<string, object?>> data)
+        {
+            if (!data.Any())
+                return System.Text.Encoding.UTF8.GetBytes(string.Empty);
+
+            var csv = new StringBuilder();
+            
+            // Headers
+            var headers = data.First().Keys;
+            csv.AppendLine(string.Join(",", headers.Select(h => $"\"{h}\"")));
+            
+            // Data rows
+            foreach (var row in data)
+            {
+                var values = headers.Select(h => 
+                {
+                    var value = row.ContainsKey(h) ? row[h]?.ToString() ?? string.Empty : string.Empty;
+                    return $"\"{value.Replace("\"", "\"\"")}\"";
+                });
+                csv.AppendLine(string.Join(",", values));
+            }
+            
+            return System.Text.Encoding.UTF8.GetBytes(csv.ToString());
         }
 
         public async Task<bool> ValidateReportDefinitionAsync(CreateReportDefinitionDto dto, Guid companyId)

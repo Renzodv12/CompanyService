@@ -97,6 +97,14 @@ namespace CompanyService.Infrastructure.Context
         public DbSet<CampaignLead> CampaignLeads => Set<CampaignLead>();
         public DbSet<CustomerTracking> CustomerTrackings => Set<CustomerTracking>();
         
+        // Company Management Module
+        public DbSet<Branch> Branches => Set<Branch>();
+        public DbSet<Department> Departments => Set<Department>();
+        public DbSet<CompanySettings> CompanySettings => Set<CompanySettings>();
+        public DbSet<CompanyDocument> CompanyDocuments => Set<CompanyDocument>();
+        public DbSet<CompanyBackup> CompanyBackups => Set<CompanyBackup>();
+        public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

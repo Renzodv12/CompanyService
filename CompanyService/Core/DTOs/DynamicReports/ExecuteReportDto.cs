@@ -30,11 +30,4 @@ namespace CompanyService.Core.DTOs.DynamicReports
         public string? Value { get; set; }
     }
 
-    public enum ExportFormat
-    {
-        Json = 0,
-        Csv = 1,
-        Excel = 2,
-        Pdf = 3
-    }
 }
