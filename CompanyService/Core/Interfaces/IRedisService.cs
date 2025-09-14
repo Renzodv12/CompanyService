@@ -1,4 +1,4 @@
-﻿namespace CompanyService.Core.Interfaces
+namespace CompanyService.Core.Interfaces
 {
     public interface IRedisService
     {
@@ -6,5 +6,6 @@
         Task<T?> GetAsync<T>(string key);
         Task<bool> KeyExistsAsync(string key);
         Task<bool> DeleteAsync(string key);
+        Task<long> DeleteByPatternAsync(string pattern);
     }
 }

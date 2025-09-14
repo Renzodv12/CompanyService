@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using CompanyService.Core.Interfaces;
+using CompanyService.Core.Attributes;
+using CompanyService.Core.Services;
 using CompanyService.Core.DTOs.Branch;
 using CompanyService.Core.DTOs.Department;
 using CompanyService.Core.DTOs.CompanySettings;
@@ -49,6 +51,7 @@ namespace CompanyService.Controllers
         /// Obtiene todas las sucursales de una empresa
         /// </summary>
         [HttpGet("branches")]
+        [Cache(durationInMinutes: 30, cacheKeyPrefix: "branches", varyByCompany: true)]
         public async Task<ActionResult<IEnumerable<BranchDto>>> GetBranches(Guid companyId)
         {
             try
@@ -67,6 +70,7 @@ namespace CompanyService.Controllers
         /// Obtiene una sucursal específica
         /// </summary>
         [HttpGet("branches/{branchId:guid}")]
+        [Cache(durationInMinutes: 60, cacheKeyPrefix: "branch", varyByCompany: true)]
         public async Task<ActionResult<BranchDto>> GetBranch(Guid companyId, Guid branchId)
         {
             try
@@ -88,6 +92,7 @@ namespace CompanyService.Controllers
         /// Crea una nueva sucursal
         /// </summary>
         [HttpPost("branches")]
+        [CacheInvalidate(CacheDataTypes.Branches, invalidateCompanyData: true)]
         public async Task<ActionResult<object>> CreateBranch(Guid companyId, [FromBody] CreateBranchRequest request)
         {
             try
@@ -111,6 +116,7 @@ namespace CompanyService.Controllers
         /// Actualiza una sucursal existente
         /// </summary>
         [HttpPut("branches/{branchId:guid}")]
+        [CacheInvalidate(CacheDataTypes.Branches, invalidateCompanyData: true, customPatterns: new[] { "branch:*:{branchId}*" })]
         public async Task<ActionResult> UpdateBranch(Guid companyId, Guid branchId, [FromBody] UpdateBranchRequest request)
         {
             try
@@ -138,6 +144,7 @@ namespace CompanyService.Controllers
         /// Elimina una sucursal
         /// </summary>
         [HttpDelete("branches/{branchId:guid}")]
+        [CacheInvalidate(CacheDataTypes.Branches, invalidateCompanyData: true, customPatterns: new[] { "branch:*:{branchId}*" })]
         public async Task<ActionResult> DeleteBranch(Guid companyId, Guid branchId)
         {
             try

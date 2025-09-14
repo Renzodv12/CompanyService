@@ -1,4 +1,4 @@
-﻿using CompanyService.Core.Interfaces;
+using CompanyService.Core.Interfaces;
 using StackExchange.Redis;
 using System.Text.Json;
 
@@ -66,6 +66,25 @@ namespace CompanyService.Core.Services
             {
                 _logger.LogError(ex, "Error deleting key {Key} from Redis", key);
                 return false;
+            }
+        }
+
+        public async Task<long> DeleteByPatternAsync(string pattern)
+        {
+            try
+            {
+                var server = _database.Multiplexer.GetServer(_database.Multiplexer.GetEndPoints().First());
+                var keys = server.Keys(pattern: pattern);
+                
+                if (!keys.Any())
+                    return 0;
+
+                return await _database.KeyDeleteAsync(keys.ToArray());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting keys by pattern {Pattern} from Redis", pattern);
+                return 0;
             }
         }
     }

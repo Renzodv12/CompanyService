@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CompanyService.Core.Enums;
 
 namespace CompanyService.Core.Entities
 {
@@ -48,6 +49,29 @@ namespace CompanyService.Core.Entities
         [Required]
         [MaxLength(50)]
         public string Username { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Contraseña del usuario
+        /// </summary>
+        [Required]
+        public string Password { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Salt para la contraseña
+        /// </summary>
+        [Required]
+        public string Salt { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Cédula de identidad
+        /// </summary>
+        [MaxLength(20)]
+        public string CI { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Tipo de autenticación
+        /// </summary>
+        public TypeAuth TypeAuth { get; set; } = TypeAuth.Password;
 
         /// <summary>
         /// Indica si el usuario está activo

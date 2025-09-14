@@ -1,5 +1,7 @@
 using CompanyService.Core.DTOs.CRM;
 using CompanyService.Core.Interfaces;
+using CompanyService.Core.Attributes;
+using CompanyService.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -24,6 +26,7 @@ namespace CompanyService.Controllers
         /// Obtiene todos los leads de una empresa
         /// </summary>
         [HttpGet("leads")]
+        [Cache(durationInMinutes: 15, cacheKeyPrefix: "leads", varyByCompany: true)]
         public async Task<ActionResult<IEnumerable<LeadListDto>>> GetLeads(
             [FromQuery] Guid companyId,
             [FromQuery] int page = 1,
@@ -45,6 +48,7 @@ namespace CompanyService.Controllers
         /// Obtiene un lead específico por ID
         /// </summary>
         [HttpGet("leads/{id}")]
+        [Cache(durationInMinutes: 30, cacheKeyPrefix: "lead", varyByCompany: false)]
         public async Task<ActionResult<LeadDto>> GetLead(Guid id)
         {
             try
@@ -66,6 +70,7 @@ namespace CompanyService.Controllers
         /// Crea un nuevo lead
         /// </summary>
         [HttpPost("leads")]
+        [CacheInvalidate(CacheDataTypes.Leads, invalidateCompanyData: true)]
         public async Task<ActionResult<LeadDto>> CreateLead([FromBody] CreateLeadDto createLeadDto)
         {
             try
@@ -87,6 +92,7 @@ namespace CompanyService.Controllers
         /// Actualiza un lead existente
         /// </summary>
         [HttpPut("leads/{id}")]
+        [CacheInvalidate(CacheDataTypes.Leads, invalidateCompanyData: true, customPatterns: new[] { "lead:*:{id}*" })]
         public async Task<ActionResult<LeadDto>> UpdateLead(Guid id, [FromBody] UpdateLeadDto updateLeadDto)
         {
             try
@@ -111,6 +117,7 @@ namespace CompanyService.Controllers
         /// Elimina un lead
         /// </summary>
         [HttpDelete("leads/{id}")]
+        [CacheInvalidate(CacheDataTypes.Leads, invalidateCompanyData: true, customPatterns: new[] { "lead:*:{id}*" })]
         public async Task<ActionResult> DeleteLead(Guid id)
         {
             try
@@ -132,6 +139,7 @@ namespace CompanyService.Controllers
         /// Convierte un lead en una oportunidad
         /// </summary>
         [HttpPost("leads/{id}/convert")]
+        [CacheInvalidate(CacheDataTypes.Leads, invalidateCompanyData: true, customPatterns: new[] { "lead:*:{id}*", "opportunities:*" })]
         public async Task<ActionResult<OpportunityDto>> ConvertLeadToOpportunity(
             Guid id, 
             [FromBody] CreateOpportunityDto createOpportunityDto)
@@ -162,6 +170,7 @@ namespace CompanyService.Controllers
         /// Obtiene todas las oportunidades de una empresa
         /// </summary>
         [HttpGet("opportunities")]
+        [Cache(durationInMinutes: 20, cacheKeyPrefix: "opportunities", varyByCompany: true)]
         public async Task<ActionResult<IEnumerable<OpportunityListDto>>> GetOpportunities(
             [FromQuery] Guid companyId,
             [FromQuery] int page = 1,
@@ -183,6 +192,7 @@ namespace CompanyService.Controllers
         /// Obtiene una oportunidad específica por ID
         /// </summary>
         [HttpGet("opportunities/{id}")]
+        [Cache(durationInMinutes: 30, cacheKeyPrefix: "opportunity", varyByCompany: false)]
         public async Task<ActionResult<OpportunityDto>> GetOpportunity(Guid id)
         {
             try

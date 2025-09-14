@@ -1,5 +1,7 @@
 using CompanyService.Application.Commands.Finance;
 using CompanyService.Application.Queries.Finance;
+using CompanyService.Core.Attributes;
+using CompanyService.Core.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +20,7 @@ namespace CompanyService.Controllers
 
         // Accounts Receivable Endpoints
         [HttpPost("accounts-receivable")]
+        [CacheInvalidate(CacheDataTypes.AccountsReceivable, invalidateCompanyData: true)]
         public async Task<IActionResult> CreateAccountsReceivable([FromBody] CreateAccountsReceivableCommand command)
         {
             var result = await _mediator.Send(command);
@@ -25,6 +28,7 @@ namespace CompanyService.Controllers
         }
 
         [HttpGet("accounts-receivable/company/{companyId}")]
+        [Cache(durationInMinutes: 20, cacheKeyPrefix: "accounts-receivable", varyByCompany: true)]
         public async Task<IActionResult> GetAccountsReceivableByCompany(Guid companyId, [FromQuery] bool onlyOverdue = false)
         {
             var query = new GetAccountsReceivableByCompanyQuery
@@ -37,6 +41,7 @@ namespace CompanyService.Controllers
         }
 
         [HttpPost("accounts-receivable/payment")]
+        [CacheInvalidate(CacheDataTypes.AccountsReceivable, invalidateCompanyData: true)]
         public async Task<IActionResult> CreateAccountsReceivablePayment([FromBody] CreateAccountsReceivablePaymentCommand command)
         {
             var result = await _mediator.Send(command);
@@ -45,6 +50,7 @@ namespace CompanyService.Controllers
 
         // Bank Account Endpoints
         [HttpPost("bank-accounts")]
+        [CacheInvalidate(CacheDataTypes.BankAccounts, invalidateCompanyData: true)]
         public async Task<IActionResult> CreateBankAccount([FromBody] CreateBankAccountCommand command)
         {
             var result = await _mediator.Send(command);
@@ -52,6 +58,7 @@ namespace CompanyService.Controllers
         }
 
         [HttpGet("bank-accounts/company/{companyId}")]
+        [Cache(durationInMinutes: 60, cacheKeyPrefix: "bank-accounts", varyByCompany: true)]
         public async Task<IActionResult> GetBankAccountsByCompany(Guid companyId)
         {
             var query = new GetBankAccountsByCompanyQuery { CompanyId = companyId };
@@ -61,6 +68,7 @@ namespace CompanyService.Controllers
 
         // Bank Transaction Endpoints
         [HttpPost("bank-transactions")]
+        [CacheInvalidate(CacheDataTypes.BankAccounts, invalidateCompanyData: true, customPatterns: new[] { "cash-flows:*" })]
         public async Task<IActionResult> CreateBankTransaction([FromBody] CreateBankTransactionCommand command)
         {
             var result = await _mediator.Send(command);
@@ -69,6 +77,7 @@ namespace CompanyService.Controllers
 
         // Cash Flow Endpoints
         [HttpPost("cash-flows")]
+        [CacheInvalidate(CacheDataTypes.CashFlows, invalidateCompanyData: true)]
         public async Task<IActionResult> CreateCashFlow([FromBody] CreateCashFlowCommand command)
         {
             var result = await _mediator.Send(command);
@@ -76,6 +85,7 @@ namespace CompanyService.Controllers
         }
 
         [HttpGet("cash-flows/company/{companyId}")]
+        [Cache(durationInMinutes: 15, cacheKeyPrefix: "cash-flows", varyByCompany: true)]
         public async Task<IActionResult> GetCashFlowsByCompany(Guid companyId, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
         {
             var query = new GetCashFlowsByCompanyQuery
