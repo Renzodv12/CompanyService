@@ -144,7 +144,7 @@ namespace CompanyService.WebApi.Endpoints
             };
 
             var product = await mediator.Send(query);
-            return product is null ? Results.NotFound() : Results.Ok(product);
+            return product is null ? Results.NoContent() : Results.Ok(product);
         }
 
         private static async Task<IResult> GetLowStockProducts(

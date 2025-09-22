@@ -8,7 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers();
 builder.Services.AddCoreServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
@@ -41,5 +40,9 @@ app.MapDashboardEndpoints();
 app.MapReportEndpoints();
 app.MapEventEndpoints();
 app.MapTaskEndpoints();
-app.MapControllers();
+app.MapCRMEndpoints();
+app.MapApprovalEndpoints();
+app.MapCompanyManagementEndpoints();
+app.MapFinanceEndpoints();
+app.MapDynamicReportsEndpoints();
 app.Run();

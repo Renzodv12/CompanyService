@@ -7,8 +7,8 @@ namespace CompanyService.Core.DTOs.Procurement
 {
     public class CreateQuotationRequest
     {
-        public int CompanyId { get; set; }
-        public int SupplierId { get; set; }
+        public Guid CompanyId { get; set; }
+        public Guid SupplierId { get; set; }
         public string QuotationNumber { get; set; } = string.Empty;
         public DateTime RequestDate { get; set; }
         public DateTime? ValidUntil { get; set; }
@@ -24,7 +24,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class CreateQuotationItemRequest
     {
-        public int ProductId { get; set; }
+        public Guid ProductId { get; set; }
         public decimal Quantity { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal DiscountPercentage { get; set; }
@@ -37,7 +37,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class UpdateQuotationRequest
     {
-        public int SupplierId { get; set; }
+        public Guid SupplierId { get; set; }
         public DateTime RequestDate { get; set; }
         public DateTime? ValidUntil { get; set; }
         public decimal SubTotal { get; set; }
@@ -66,10 +66,10 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class QuotationResponse
     {
-        public int Id { get; set; }
-        public int CompanyId { get; set; }
+        public Guid Id { get; set; }
+        public Guid CompanyId { get; set; }
         public string CompanyName { get; set; } = string.Empty;
-        public int SupplierId { get; set; }
+        public Guid SupplierId { get; set; }
         public string SupplierName { get; set; } = string.Empty;
         public string QuotationNumber { get; set; } = string.Empty;
         public DateTime RequestDate { get; set; }
@@ -83,12 +83,12 @@ namespace CompanyService.Core.DTOs.Procurement
         public string? Notes { get; set; }
         public string? PaymentTerms { get; set; }
         public string? DeliveryTerms { get; set; }
-        public int? RequestedByUserId { get; set; }
+        public Guid? RequestedByUserId { get; set; }
         public string? RequestedByUserName { get; set; }
-        public int? ReviewedByUserId { get; set; }
+        public Guid? ReviewedByUserId { get; set; }
         public string? ReviewedByUserName { get; set; }
         public DateTime? ReviewedAt { get; set; }
-        public int? PurchaseOrderId { get; set; }
+        public Guid? PurchaseOrderId { get; set; }
         public string? PurchaseOrderNumber { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
@@ -97,9 +97,9 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class QuotationItemResponse
     {
-        public int Id { get; set; }
-        public int QuotationId { get; set; }
-        public int ProductId { get; set; }
+        public Guid Id { get; set; }
+        public Guid QuotationId { get; set; }
+        public Guid ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;
         public string ProductSku { get; set; } = string.Empty;
         public decimal Quantity { get; set; }
@@ -109,13 +109,14 @@ namespace CompanyService.Core.DTOs.Procurement
         public decimal LineTotal { get; set; }
         public string? Notes { get; set; }
         public string? Specifications { get; set; }
+        public int? LeadTimeDays { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
 
     public class QuotationSummaryResponse
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string QuotationNumber { get; set; } = string.Empty;
         public string SupplierName { get; set; } = string.Empty;
         public DateTime RequestDate { get; set; }
@@ -175,7 +176,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class QuotationComparisonItem
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string QuotationNumber { get; set; } = string.Empty;
         public string SupplierName { get; set; } = string.Empty;
         public decimal TotalAmount { get; set; }
@@ -186,14 +187,14 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class ProductComparisonItem
     {
-        public int ProductId { get; set; }
+        public Guid ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;
         public List<ProductQuotationDetail> QuotationDetails { get; set; } = new();
     }
 
     public class ProductQuotationDetail
     {
-        public int QuotationId { get; set; }
+        public Guid QuotationId { get; set; }
         public string SupplierName { get; set; } = string.Empty;
         public decimal UnitPrice { get; set; }
         public decimal Quantity { get; set; }
@@ -203,10 +204,10 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class QuotationReportRequest
     {
-        public int CompanyId { get; set; }
+        public Guid CompanyId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public int? SupplierId { get; set; }
+        public Guid? SupplierId { get; set; }
         public QuotationStatus? Status { get; set; }
         public string? ReportType { get; set; }
     }
@@ -223,7 +224,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class QuotationSummary
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string QuotationNumber { get; set; } = string.Empty;
         public string SupplierName { get; set; } = string.Empty;
         public DateTime RequestDate { get; set; }
@@ -233,7 +234,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class SupplierQuotationSummary
     {
-        public int SupplierId { get; set; }
+        public Guid SupplierId { get; set; }
         public string SupplierName { get; set; } = string.Empty;
         public int QuotationCount { get; set; }
         public decimal TotalAmount { get; set; }

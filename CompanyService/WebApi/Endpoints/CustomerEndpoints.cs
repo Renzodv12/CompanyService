@@ -110,7 +110,7 @@ namespace CompanyService.WebApi.Endpoints
             };
 
             var customer = await mediator.Send(query);
-            return customer is null ? Results.NotFound() : Results.Ok(customer);
+            return customer is null ? Results.NoContent() : Results.Ok(customer);
         }
     }
 

@@ -9,16 +9,16 @@ namespace CompanyService.Core.Validators.Procurement
         public CreateGoodsReceiptRequestValidator()
         {
             RuleFor(x => x.CompanyId)
-                .GreaterThan(0)
-                .WithMessage("CompanyId debe ser mayor a 0");
+                .NotEmpty()
+                .WithMessage("CompanyId es requerido");
 
             RuleFor(x => x.PurchaseOrderId)
-                .GreaterThan(0)
-                .WithMessage("PurchaseOrderId debe ser mayor a 0");
+                .NotEmpty()
+                .WithMessage("PurchaseOrderId es requerido");
 
             RuleFor(x => x.SupplierId)
-                .GreaterThan(0)
-                .WithMessage("SupplierId debe ser mayor a 0");
+                .NotEmpty()
+                .WithMessage("SupplierId es requerido");
 
             RuleFor(x => x.ReceiptNumber)
                 .NotEmpty()

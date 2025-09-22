@@ -9,8 +9,8 @@ namespace CompanyService.Core.Validators.Procurement
         public CreateQuotationRequestValidator()
         {
             RuleFor(x => x.CompanyId)
-                .GreaterThan(0)
-                .WithMessage("CompanyId debe ser mayor a 0");
+                .NotEmpty()
+                .WithMessage("CompanyId es requerido");
 
             RuleFor(x => x.SupplierId)
                 .NotEmpty()

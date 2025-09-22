@@ -75,7 +75,7 @@ namespace CompanyService.Core
             services.AddAuthorization();
             services.AddScoped<IReportService, ReportService>();
             services.AddScoped<IDashboardService, DashboardService>();
-            services.AddScoped<IRedisService, RedisService>();
+            services.AddSingleton<IRedisService, RedisService>();
             services.AddScoped<IMenuService, MenuService>();
             
             // InventoryService Services

@@ -48,20 +48,4 @@ namespace CompanyService.Core.DTOs.DynamicReports
         public int DisplayOrder { get; set; }
         public DateTime CreatedAt { get; set; }
     }
-
-    public class ReportDefinitionListDto
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string? Description { get; set; }
-        public string EntityName { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
-        public bool IsShared { get; set; }
-        public int Version { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? LastModifiedAt { get; set; }
-        public string CreatedByUserName { get; set; } = string.Empty;
-        public int FieldsCount { get; set; }
-        public int FiltersCount { get; set; }
-    }
 }

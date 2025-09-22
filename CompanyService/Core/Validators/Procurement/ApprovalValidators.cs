@@ -9,8 +9,8 @@ namespace CompanyService.Core.Validators.Procurement
         public CreateApprovalRequestValidator()
         {
             RuleFor(x => x.CompanyId)
-                .GreaterThan(0)
-                .WithMessage("CompanyId debe ser mayor a 0");
+                .NotEmpty()
+                .WithMessage("CompanyId es requerido");
 
             RuleFor(x => x.EntityType)
                 .NotEmpty()
@@ -19,12 +19,14 @@ namespace CompanyService.Core.Validators.Procurement
                 .WithMessage("El tipo de entidad no puede exceder 50 caracteres");
 
             RuleFor(x => x.EntityId)
-                .GreaterThan(0)
-                .WithMessage("EntityId debe ser mayor a 0");
+                .NotEmpty()
+                .When(x => x.EntityId.HasValue)
+                .WithMessage("EntityId es requerido");
 
             RuleFor(x => x.RequestedByUserId)
-                .GreaterThan(0)
-                .WithMessage("RequestedByUserId debe ser mayor a 0");
+                .NotEmpty()
+                .When(x => x.RequestedByUserId.HasValue)
+                .WithMessage("RequestedByUserId es requerido");
 
             RuleFor(x => x.Amount)
                 .GreaterThanOrEqualTo(0)
@@ -93,7 +95,7 @@ namespace CompanyService.Core.Validators.Procurement
                 .WithMessage("Los comentarios no pueden exceder 1000 caracteres");
 
             RuleFor(x => x.DelegateToUserId)
-                .GreaterThan(0)
+                .NotEmpty()
                 .When(x => x.Action == ApprovalAction.Delegate)
                 .WithMessage("Debe especificar un usuario para delegar cuando la acción es Delegate");
 
@@ -109,8 +111,8 @@ namespace CompanyService.Core.Validators.Procurement
         public CreateApprovalLevelRequestValidator()
         {
             RuleFor(x => x.CompanyId)
-                .GreaterThan(0)
-                .WithMessage("CompanyId debe ser mayor a 0");
+                .NotEmpty()
+                .WithMessage("CompanyId es requerido");
 
             RuleFor(x => x.Name)
                 .NotEmpty()
@@ -203,12 +205,12 @@ namespace CompanyService.Core.Validators.Procurement
         public CreateApprovalLevelUserRequestValidator()
         {
             RuleFor(x => x.ApprovalLevelId)
-                .GreaterThan(0)
-                .WithMessage("ApprovalLevelId debe ser mayor a 0");
+                .NotEmpty()
+                .WithMessage("ApprovalLevelId es requerido");
 
             RuleFor(x => x.UserId)
-                .GreaterThan(0)
-                .WithMessage("UserId debe ser mayor a 0");
+                .NotEmpty()
+                .WithMessage("UserId es requerido");
 
             RuleFor(x => x.CanDelegate)
                 .NotNull()

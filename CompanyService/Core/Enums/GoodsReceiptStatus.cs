@@ -3,12 +3,13 @@ namespace CompanyService.Core.Enums
     public enum GoodsReceiptStatus
     {
         Draft = 0,
-        Received = 1,
-        UnderInspection = 2,
-        PartiallyAccepted = 3,
-        FullyAccepted = 4,
-        Rejected = 5,
-        Completed = 6,
-        Cancelled = 7
+        Pending = 1,
+        Received = 2,
+        UnderInspection = 3,
+        PartiallyAccepted = 4,
+        FullyAccepted = 5,
+        Rejected = 6,
+        Completed = 7,
+        Cancelled = 8
     }
 }

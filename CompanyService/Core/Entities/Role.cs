@@ -1,9 +1,10 @@
-﻿namespace CompanyService.Core.Entities
+namespace CompanyService.Core.Entities
 {
     public class Role
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         public Guid CompanyId { get; set; }
         public Company Company { get; set; }

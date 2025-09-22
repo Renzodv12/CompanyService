@@ -31,17 +31,24 @@ namespace CompanyService.WebApi.Middleware
 
                     if (!string.IsNullOrEmpty(jti))
                     {
-                        var isRevoked = await _mediator.Send(new IsTokenRevokedQuery(jti));
-                        if (isRevoked)
+                        try
                         {
-                            context.Response.StatusCode = 401;
-                            await context.Response.WriteAsync(JsonSerializer.Serialize(new
+                            var isRevoked = await _mediator.Send(new IsTokenRevokedQuery(jti));
+                            if (isRevoked)
                             {
-                                error = "Token revocado",
-                                message = "El token ha sido revocado y ya no es valido"
-                            }));
-                            return;
+                                context.Response.StatusCode = 401;
+                                await context.Response.WriteAsync(JsonSerializer.Serialize(new
+                                {
+                                    error = "Token revocado",
+                                    message = "El token ha sido revocado y ya no es valido"
+                                }));
+                                return;
+                            }
+                        }catch(Exception ex)
+                        {
+
                         }
+                      
                     }
                     var claimValue = context.User.FindFirst("2fa")?.Value;
                     bool has2fa = bool.TryParse(claimValue, out var result) && result;
@@ -50,12 +57,12 @@ namespace CompanyService.WebApi.Middleware
                     var path = context.Request.Path.Value?.ToLower();
                     var allowedWithout2FA = new[] { "/auth", "/security" };
 
-                    if (!has2fa && !allowedWithout2FA.Any(p => path.StartsWith(p)))
-                    {
-                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                        await context.Response.WriteAsync("Segundo factor Requerido.");
-                        return;
-                    }
+                    //if (!has2fa && !allowedWithout2FA.Any(p => path.StartsWith(p)))
+                    //{
+                    //    context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                    //    await context.Response.WriteAsync("Segundo factor Requerido.");
+                    //    return;
+                    //}
                 }
             }
 

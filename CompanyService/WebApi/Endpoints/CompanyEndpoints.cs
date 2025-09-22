@@ -116,7 +116,7 @@ namespace CompanyService.WebApi.Endpoints
             });
 
             return companyDetail is null
-                ? Results.NotFound()
+                ? Results.NoContent()
                 : Results.Ok(companyDetail);
 
         }

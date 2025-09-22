@@ -7,11 +7,12 @@ namespace CompanyService.Core.DTOs.Procurement
 {
     public class CreateApprovalRequest
     {
-        public int CompanyId { get; set; }
+        public Guid CompanyId { get; set; }
         public string DocumentType { get; set; } = string.Empty;
-        public int DocumentId { get; set; }
-        public int ApprovalLevelId { get; set; }
-        public int UserId { get; set; }
+        public Guid DocumentId { get; set; }
+        public string? DocumentNumber { get; set; }
+        public Guid ApprovalLevelId { get; set; }
+        public Guid UserId { get; set; }
         public decimal? DocumentAmount { get; set; }
         public string? Comments { get; set; }
         public DateTime? DueDate { get; set; }
@@ -19,10 +20,10 @@ namespace CompanyService.Core.DTOs.Procurement
         public DateTime? RequiredDate { get; set; }
         public string? Priority { get; set; }
         public string? Reason { get; set; }
-        public int? RequestedByUserId { get; set; }
+        public Guid? RequestedByUserId { get; set; }
         public decimal? Amount { get; set; }
         public string? EntityType { get; set; }
-        public int? EntityId { get; set; }
+        public Guid? EntityId { get; set; }
     }
 
     public class UpdateApprovalRequest
@@ -30,6 +31,7 @@ namespace CompanyService.Core.DTOs.Procurement
         public ApprovalStatus Status { get; set; }
         public string? Comments { get; set; }
         public string? RejectionReason { get; set; }
+        public DateTime? DueDate { get; set; }
         public string? Notes { get; set; }
         public DateTime? RequiredDate { get; set; }
         public string? Reason { get; set; }
@@ -40,21 +42,21 @@ namespace CompanyService.Core.DTOs.Procurement
     {
         public ApprovalAction Action { get; set; }
         public string Comments { get; set; } = string.Empty;
-        public int? DelegateToUserId { get; set; }
+        public Guid? DelegateToUserId { get; set; }
     }
 
     public class ApprovalResponse
     {
-        public int Id { get; set; }
-        public int CompanyId { get; set; }
+        public Guid Id { get; set; }
+        public Guid CompanyId { get; set; }
         public string CompanyName { get; set; } = string.Empty;
         public string DocumentType { get; set; } = string.Empty;
-        public int DocumentId { get; set; }
+        public Guid DocumentId { get; set; }
         public string? DocumentNumber { get; set; }
-        public int ApprovalLevelId { get; set; }
+        public Guid ApprovalLevelId { get; set; }
         public string ApprovalLevelName { get; set; } = string.Empty;
         public int Level { get; set; }
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public string UserName { get; set; } = string.Empty;
         public ApprovalStatus Status { get; set; }
         public decimal? DocumentAmount { get; set; }
@@ -68,9 +70,9 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class ApprovalSummaryResponse
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string DocumentType { get; set; } = string.Empty;
-        public int DocumentId { get; set; }
+        public Guid DocumentId { get; set; }
         public string? DocumentNumber { get; set; }
         public string ApprovalLevelName { get; set; } = string.Empty;
         public int Level { get; set; }
@@ -83,7 +85,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class CreateApprovalLevelRequest
     {
-        public int CompanyId { get; set; }
+        public Guid CompanyId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string DocumentType { get; set; } = string.Empty;
@@ -95,7 +97,7 @@ namespace CompanyService.Core.DTOs.Procurement
         public int? AutoApprovalDays { get; set; }
         public bool IsActive { get; set; } = true;
         public int RequiredApprovals { get; set; }
-        public List<int> UserIds { get; set; } = new();
+        public List<Guid> UserIds { get; set; } = new();
     }
 
     public class UpdateApprovalLevelRequest
@@ -109,20 +111,22 @@ namespace CompanyService.Core.DTOs.Procurement
         public int RequiredApprovals { get; set; }
         public int? AutoApprovalDays { get; set; }
         public bool IsActive { get; set; }
-        public List<int> UserIds { get; set; } = new();
+        public List<Guid> UserIds { get; set; } = new();
     }
 
     public class ApprovalLevelResponse
     {
-        public int Id { get; set; }
-        public int CompanyId { get; set; }
+        public Guid Id { get; set; }
+        public Guid CompanyId { get; set; }
         public string CompanyName { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public string DocumentType { get; set; } = string.Empty;
         public int Level { get; set; }
         public decimal? MinAmount { get; set; }
         public decimal? MaxAmount { get; set; }
         public bool RequiresAllApprovers { get; set; }
+        public int RequiredApprovals { get; set; }
         public int? AutoApprovalDays { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -132,13 +136,13 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class ApprovalLevelUserResponse
     {
-        public int Id { get; set; }
-        public int ApprovalLevelId { get; set; }
-        public int UserId { get; set; }
+        public Guid Id { get; set; }
+        public Guid ApprovalLevelId { get; set; }
+        public Guid UserId { get; set; }
         public string UserName { get; set; } = string.Empty;
         public string UserEmail { get; set; } = string.Empty;
         public bool IsActive { get; set; }
-        public int? DelegatedToUserId { get; set; }
+        public Guid? DelegatedToUserId { get; set; }
         public string? DelegatedToUserName { get; set; }
         public DateTime? DelegationStartDate { get; set; }
         public DateTime? DelegationEndDate { get; set; }
@@ -147,8 +151,8 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class CreateApprovalLevelUserRequest
     {
-        public int ApprovalLevelId { get; set; }
-        public int UserId { get; set; }
+        public Guid ApprovalLevelId { get; set; }
+        public Guid UserId { get; set; }
         public bool IsActive { get; set; } = true;
         public bool CanDelegate { get; set; }
         public int? MaxDelegationLevel { get; set; }
@@ -157,7 +161,7 @@ namespace CompanyService.Core.DTOs.Procurement
     public class UpdateApprovalLevelUserRequest
     {
         public bool IsActive { get; set; }
-        public int? DelegatedToUserId { get; set; }
+        public Guid? DelegatedToUserId { get; set; }
         public DateTime? DelegationStartDate { get; set; }
         public DateTime? DelegationEndDate { get; set; }
         public bool CanDelegate { get; set; }
@@ -167,7 +171,7 @@ namespace CompanyService.Core.DTOs.Procurement
     public class ApprovalWorkflowRequest
     {
         public string DocumentType { get; set; } = string.Empty;
-        public int DocumentId { get; set; }
+        public Guid DocumentId { get; set; }
         public decimal DocumentAmount { get; set; }
         public string? Comments { get; set; }
     }
@@ -175,7 +179,7 @@ namespace CompanyService.Core.DTOs.Procurement
     public class ApprovalWorkflowResponse
     {
         public string DocumentType { get; set; } = string.Empty;
-        public int DocumentId { get; set; }
+        public Guid DocumentId { get; set; }
         public string? DocumentNumber { get; set; }
         public decimal DocumentAmount { get; set; }
         public List<ApprovalStepResponse> Steps { get; set; } = new();
@@ -186,7 +190,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class ApprovalStepResponse
     {
-        public int ApprovalId { get; set; }
+        public Guid ApprovalId { get; set; }
         public int Level { get; set; }
         public string LevelName { get; set; } = string.Empty;
         public List<ApprovalUserResponse> Approvers { get; set; } = new();
@@ -198,7 +202,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class ApprovalUserResponse
     {
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public string UserName { get; set; } = string.Empty;
         public ApprovalStatus Status { get; set; }
         public string? Comments { get; set; }
@@ -211,7 +215,7 @@ namespace CompanyService.Core.DTOs.Procurement
     {
         public string? DocumentType { get; set; }
         public ApprovalStatus? Status { get; set; }
-        public int? UserId { get; set; }
+        public Guid? UserId { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public decimal? MinAmount { get; set; }
@@ -224,29 +228,29 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class BulkApprovalRequest
     {
-        public List<int> ApprovalIds { get; set; } = new();
+        public List<Guid> ApprovalIds { get; set; } = new();
         public ApprovalStatus Status { get; set; }
         public string? Comments { get; set; }
     }
 
     public class DelegateApprovalRequest
     {
-        public int FromUserId { get; set; }
-        public int ToUserId { get; set; }
+        public Guid FromUserId { get; set; }
+        public Guid ToUserId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public List<int>? ApprovalLevelIds { get; set; }
+        public List<Guid>? ApprovalLevelIds { get; set; }
     }
 
     public class ApprovalReportRequest
     {
-        public int CompanyId { get; set; }
+        public Guid CompanyId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string? DocumentType { get; set; }
         public string? EntityType { get; set; }
         public ApprovalStatus? Status { get; set; }
-        public int? UserId { get; set; }
+        public Guid? UserId { get; set; }
         public string? ReportType { get; set; }
     }
 
@@ -265,7 +269,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class ApprovalSummary
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string DocumentType { get; set; } = string.Empty;
         public string DocumentNumber { get; set; } = string.Empty;
         public decimal Amount { get; set; }
@@ -278,11 +282,48 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class UserApprovalSummary
     {
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public string UserName { get; set; } = string.Empty;
         public int TotalProcessed { get; set; }
         public int ApprovedCount { get; set; }
         public int RejectedCount { get; set; }
         public decimal AverageProcessingTime { get; set; }
+    }
+
+    // DTOs simples para los Handlers
+    public class ApprovalDto
+    {
+        public Guid Id { get; set; }
+        public string DocumentType { get; set; } = string.Empty;
+        public Guid DocumentId { get; set; }
+        public Guid RequestedBy { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public DateTime RequestDate { get; set; }
+        public DateTime? ApprovedDate { get; set; }
+        public Guid? ApprovedBy { get; set; }
+        public string? Comments { get; set; }
+        public DateTime? DueDate { get; set; }
+        public Guid CompanyId { get; set; }
+    }
+
+    public class BulkProcessApprovalsRequest
+    {
+        public List<Guid> ApprovalIds { get; set; } = new();
+        public ApprovalAction Action { get; set; }
+        public string Comments { get; set; } = string.Empty;
+        public Guid? DelegateToUserId { get; set; }
+    }
+
+    public class ApprovalLevelDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public int Level { get; set; }
+        public decimal? MinAmount { get; set; }
+        public decimal? MaxAmount { get; set; }
+        public bool RequiresAllApprovers { get; set; }
+        public bool IsActive { get; set; }
+        public Guid CompanyId { get; set; }
     }
 }

@@ -111,7 +111,7 @@ namespace CompanyService.WebApi.Endpoints
             };
 
             var sale = await mediator.Send(query);
-            return sale is null ? Results.NotFound() : Results.Ok(sale);
+            return sale is null ? Results.NoContent() : Results.Ok(sale);
         }
     }
 

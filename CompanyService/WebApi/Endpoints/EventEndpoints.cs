@@ -162,7 +162,7 @@ namespace CompanyService.WebApi.Endpoints
             try
             {
                 var eventDto = await mediator.Send(query);
-                return eventDto is null ? Results.NotFound() : Results.Ok(eventDto);
+                return eventDto is null ? Results.NoContent() : Results.Ok(eventDto);
             }
             catch (Exception ex)
             {

@@ -1648,16 +1648,16 @@ namespace CompanyService.Core.Services
             // Map to response DTOs
             return approvals.Select(a => new ApprovalResponse
             {
-                Id = (int)a.Id.GetHashCode(), // TODO: Proper ID mapping
-                CompanyId = (int)a.CompanyId.GetHashCode(), // TODO: Proper CompanyId mapping
+                Id = a.Id,
+                CompanyId = a.CompanyId,
                 CompanyName = a.Company?.Name ?? string.Empty,
                 DocumentType = a.DocumentType,
-                DocumentId = (int)a.DocumentId.GetHashCode(), // TODO: Proper DocumentId mapping
+                DocumentId = a.DocumentId,
                 DocumentNumber = a.DocumentNumber,
-                ApprovalLevelId = (int)a.ApprovalLevelId.GetHashCode(), // TODO: Proper ApprovalLevelId mapping
+                ApprovalLevelId = a.ApprovalLevelId,
                 ApprovalLevelName = a.ApprovalLevel?.Name ?? string.Empty,
                 Level = a.ApprovalLevel?.Level ?? 0,
-                UserId = (int)a.RequestedBy.GetHashCode(), // TODO: Proper UserId mapping
+                UserId = a.RequestedBy,
                 UserName = a.RequestedByUser?.Name ?? string.Empty,
                 Status = a.Status,
                 DocumentAmount = a.DocumentAmount,

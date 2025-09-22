@@ -228,7 +228,7 @@ namespace CompanyService.WebApi.Endpoints
             try
             {
                 var task = await mediator.Send(query);
-                return task is null ? Results.NotFound() : Results.Ok(task);
+                return task is null ? Results.NoContent() : Results.Ok(task);
             }
             catch (Exception ex)
             {

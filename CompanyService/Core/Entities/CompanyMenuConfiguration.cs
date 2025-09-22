@@ -5,13 +5,13 @@ namespace CompanyService.Core.Entities
     public class CompanyMenuConfiguration
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         
         [Required]
         public Guid CompanyId { get; set; }
         
         [Required]
-        public int MenuId { get; set; }
+        public Guid MenuId { get; set; }
         
         public bool IsEnabled { get; set; } = true;
         

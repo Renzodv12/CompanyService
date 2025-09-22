@@ -62,10 +62,10 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class PurchaseOrderResponse
     {
-        public int Id { get; set; }
-        public int CompanyId { get; set; }
+        public Guid Id { get; set; }
+        public Guid CompanyId { get; set; }
         public string CompanyName { get; set; } = string.Empty;
-        public int SupplierId { get; set; }
+        public Guid SupplierId { get; set; }
         public string SupplierName { get; set; } = string.Empty;
         public string OrderNumber { get; set; } = string.Empty;
         public DateTime OrderDate { get; set; }
@@ -79,9 +79,9 @@ namespace CompanyService.Core.DTOs.Procurement
         public string? Notes { get; set; }
         public string? PaymentTerms { get; set; }
         public string? DeliveryTerms { get; set; }
-        public int? CreatedByUserId { get; set; }
+        public Guid? CreatedByUserId { get; set; }
         public string? CreatedByUserName { get; set; }
-        public int? ApprovedByUserId { get; set; }
+        public Guid? ApprovedByUserId { get; set; }
         public string? ApprovedByUserName { get; set; }
         public DateTime? ApprovedAt { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -91,9 +91,9 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class PurchaseOrderItemResponse
     {
-        public int Id { get; set; }
-        public int PurchaseOrderId { get; set; }
-        public int ProductId { get; set; }
+        public Guid Id { get; set; }
+        public Guid PurchaseOrderId { get; set; }
+        public Guid ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;
         public string ProductSku { get; set; } = string.Empty;
         public decimal Quantity { get; set; }
@@ -109,7 +109,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class PurchaseOrderSummaryResponse
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string OrderNumber { get; set; } = string.Empty;
         public string SupplierName { get; set; } = string.Empty;
         public DateTime OrderDate { get; set; }
@@ -162,7 +162,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class PurchaseOrderSummary
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string OrderNumber { get; set; } = string.Empty;
         public string SupplierName { get; set; } = string.Empty;
         public DateTime OrderDate { get; set; }
@@ -172,7 +172,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class SupplierSummary
     {
-        public int SupplierId { get; set; }
+        public Guid SupplierId { get; set; }
         public string SupplierName { get; set; } = string.Empty;
         public int OrderCount { get; set; }
         public decimal TotalAmount { get; set; }

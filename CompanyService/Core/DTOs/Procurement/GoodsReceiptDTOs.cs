@@ -7,9 +7,9 @@ namespace CompanyService.Core.DTOs.Procurement
 {
     public class CreateGoodsReceiptRequest
     {
-        public int CompanyId { get; set; }
-        public int PurchaseOrderId { get; set; }
-        public int SupplierId { get; set; }
+        public Guid CompanyId { get; set; }
+        public Guid PurchaseOrderId { get; set; }
+        public Guid SupplierId { get; set; }
         public string ReceiptNumber { get; set; } = string.Empty;
         public DateTime ReceiptDate { get; set; }
         public string? DeliveryNote { get; set; }
@@ -21,20 +21,22 @@ namespace CompanyService.Core.DTOs.Procurement
         public decimal? InsuranceCost { get; set; }
         public decimal? OtherCosts { get; set; }
         public string? Notes { get; set; }
+        public Guid? ReceivedByUserId { get; set; }
         public List<CreateGoodsReceiptItemRequest> Items { get; set; } = new();
     }
 
     public class CreateGoodsReceiptItemRequest
     {
-        public int PurchaseOrderItemId { get; set; }
-        public int ProductId { get; set; }
-        public int? WarehouseId { get; set; }
+        public Guid PurchaseOrderItemId { get; set; }
+        public Guid ProductId { get; set; }
+        public Guid? WarehouseId { get; set; }
         public decimal OrderedQuantity { get; set; }
         public decimal ReceivedQuantity { get; set; }
         public decimal AcceptedQuantity { get; set; }
         public decimal RejectedQuantity { get; set; }
         public decimal DamagedQuantity { get; set; }
         public QualityStatus QualityStatus { get; set; }
+        public string? QualityNotes { get; set; }
         public string? BatchNumber { get; set; }
         public string? SerialNumbers { get; set; }
         public DateTime? ExpirationDate { get; set; }
@@ -61,10 +63,10 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class UpdateGoodsReceiptItemRequest
     {
-        public int? Id { get; set; }
-        public int PurchaseOrderItemId { get; set; }
-        public int ProductId { get; set; }
-        public int? WarehouseId { get; set; }
+        public Guid? Id { get; set; }
+        public Guid PurchaseOrderItemId { get; set; }
+        public Guid ProductId { get; set; }
+        public Guid? WarehouseId { get; set; }
         public decimal ReceivedQuantity { get; set; }
         public decimal AcceptedQuantity { get; set; }
         public decimal RejectedQuantity { get; set; }
@@ -81,12 +83,12 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class GoodsReceiptResponse
     {
-        public int Id { get; set; }
-        public int CompanyId { get; set; }
+        public Guid Id { get; set; }
+        public Guid CompanyId { get; set; }
         public string CompanyName { get; set; } = string.Empty;
-        public int PurchaseOrderId { get; set; }
+        public Guid PurchaseOrderId { get; set; }
         public string PurchaseOrderNumber { get; set; } = string.Empty;
-        public int SupplierId { get; set; }
+        public Guid SupplierId { get; set; }
         public string SupplierName { get; set; } = string.Empty;
         public string ReceiptNumber { get; set; } = string.Empty;
         public DateTime ReceiptDate { get; set; }
@@ -101,9 +103,9 @@ namespace CompanyService.Core.DTOs.Procurement
         public decimal? OtherCosts { get; set; }
         public decimal TotalCost { get; set; }
         public string? Notes { get; set; }
-        public int? ReceivedByUserId { get; set; }
+        public Guid? ReceivedByUserId { get; set; }
         public string? ReceivedByUserName { get; set; }
-        public int? InspectedByUserId { get; set; }
+        public Guid? InspectedByUserId { get; set; }
         public string? InspectedByUserName { get; set; }
         public DateTime? InspectedAt { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -113,13 +115,13 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class GoodsReceiptItemResponse
     {
-        public int Id { get; set; }
-        public int GoodsReceiptId { get; set; }
-        public int PurchaseOrderItemId { get; set; }
-        public int ProductId { get; set; }
+        public Guid Id { get; set; }
+        public Guid GoodsReceiptId { get; set; }
+        public Guid PurchaseOrderItemId { get; set; }
+        public Guid ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;
         public string ProductSku { get; set; } = string.Empty;
-        public int? WarehouseId { get; set; }
+        public Guid? WarehouseId { get; set; }
         public string? WarehouseName { get; set; }
         public decimal OrderedQuantity { get; set; }
         public decimal ReceivedQuantity { get; set; }
@@ -133,7 +135,7 @@ namespace CompanyService.Core.DTOs.Procurement
         public DateTime? ManufactureDate { get; set; }
         public string? StorageLocation { get; set; }
         public bool RequiresInspection { get; set; }
-        public int? InspectedByUserId { get; set; }
+        public Guid? InspectedByUserId { get; set; }
         public string? InspectedByUserName { get; set; }
         public DateTime? InspectedAt { get; set; }
         public string? Notes { get; set; }
@@ -143,7 +145,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class GoodsReceiptSummaryResponse
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string ReceiptNumber { get; set; } = string.Empty;
         public string PurchaseOrderNumber { get; set; } = string.Empty;
         public string SupplierName { get; set; } = string.Empty;
@@ -163,7 +165,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class InspectGoodsReceiptItemRequest
     {
-        public int GoodsReceiptItemId { get; set; }
+        public Guid GoodsReceiptItemId { get; set; }
         public QualityStatus QualityStatus { get; set; }
         public decimal AcceptedQuantity { get; set; }
         public decimal RejectedQuantity { get; set; }
@@ -180,8 +182,8 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class GoodsReceiptFilterRequest
     {
-        public int? PurchaseOrderId { get; set; }
-        public int? SupplierId { get; set; }
+        public Guid? PurchaseOrderId { get; set; }
+        public Guid? SupplierId { get; set; }
         public GoodsReceiptStatus? Status { get; set; }
         public QualityStatus? QualityStatus { get; set; }
         public DateTime? StartDate { get; set; }
@@ -196,8 +198,8 @@ namespace CompanyService.Core.DTOs.Procurement
     {
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public int? SupplierId { get; set; }
-        public int? WarehouseId { get; set; }
+        public Guid? SupplierId { get; set; }
+        public Guid? WarehouseId { get; set; }
         public bool IncludeQualityMetrics { get; set; }
         public bool IncludeDefectAnalysis { get; set; }
     }
@@ -227,7 +229,7 @@ namespace CompanyService.Core.DTOs.Procurement
 
     public class SupplierPerformance
     {
-        public int SupplierId { get; set; }
+        public Guid SupplierId { get; set; }
         public string SupplierName { get; set; } = string.Empty;
         public int TotalReceipts { get; set; }
         public decimal TotalValue { get; set; }

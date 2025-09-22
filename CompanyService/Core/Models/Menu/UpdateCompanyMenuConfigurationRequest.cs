@@ -14,7 +14,7 @@ namespace CompanyService.Core.Models.Menu
     public class MenuConfigurationItem
     {
         [Required]
-        public int MenuId { get; set; }
+        public Guid MenuId { get; set; }
         
         [Required]
         public bool IsEnabled { get; set; }

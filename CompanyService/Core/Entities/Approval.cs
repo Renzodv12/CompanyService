@@ -68,6 +68,13 @@ namespace CompanyService.Core.Entities
         
         public DateTime? ModifiedDate { get; set; }
         
+        // Additional properties for compatibility
+        public DateTime RequestDate { get; set; }
+        
+        public DateTime CreatedAt { get; set; }
+        
+        public DateTime LastModifiedAt { get; set; }
+        
         // Navigation Properties
         [ForeignKey("CompanyId")]
         public virtual Company Company { get; set; } = null!;
