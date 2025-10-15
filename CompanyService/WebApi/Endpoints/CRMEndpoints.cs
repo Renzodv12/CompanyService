@@ -141,10 +141,10 @@ namespace CompanyService.WebApi.Endpoints
         // Lead methods
         private static async Task<IResult> GetLeads(
             Guid companyId,
-            int page,
-            int pageSize,
             HttpContext httpContext,
-            ISender mediator)
+            ISender mediator,
+            int page = 1,
+            int pageSize = 20)
         {
             var claims = httpContext.ExtractTokenClaims();
             if (claims.UserId is null)
@@ -357,10 +357,10 @@ namespace CompanyService.WebApi.Endpoints
         // Opportunity methods
         private static async Task<IResult> GetOpportunities(
             Guid companyId,
-            int page,
-            int pageSize,
             HttpContext httpContext,
-            ISender mediator)
+            ISender mediator,
+            int page = 1,
+            int pageSize = 20)
         {
             var claims = httpContext.ExtractTokenClaims();
             if (claims.UserId is null)

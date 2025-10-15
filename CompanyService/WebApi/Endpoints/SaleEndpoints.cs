@@ -3,6 +3,7 @@ using CompanyService.Core.Feature.Querys.Sale;
 using CompanyService.Core.Models.Sale;
 using CompanyService.WebApi.Extensions;
 using MediatR;
+using FluentValidation;
 
 namespace CompanyService.WebApi.Endpoints
 {
@@ -38,9 +39,20 @@ namespace CompanyService.WebApi.Endpoints
         private static async Task<IResult> CreateSale(
             Guid companyId,
             CreateSaleRequest request,
+            IValidator<CreateSaleRequest> validator,
             HttpContext httpContext,
             ISender mediator)
         {
+            var validationResult = await validator.ValidateAsync(request);
+            if (!validationResult.IsValid)
+            {
+                return Results.BadRequest(validationResult.Errors.Select(e => new
+                {
+                    Property = e.PropertyName,
+                    Error = e.ErrorMessage
+                }));
+            }
+
             var claims = httpContext.ExtractTokenClaims();
             if (claims.UserId is null)
                 return Results.Unauthorized();
@@ -62,9 +74,13 @@ namespace CompanyService.WebApi.Endpoints
                 var saleId = await mediator.Send(command);
                 return Results.Created($"/companies/{companyId}/sales/{saleId}", new { Id = saleId });
             }
-            catch (Exception ex)
+            catch (ApplicationException ex)
             {
                 return Results.BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem("Error interno del servidor", statusCode: 500);
             }
         }
 

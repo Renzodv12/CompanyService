@@ -27,8 +27,14 @@ namespace CompanyService.Core.DTOs.Finance
         [StringLength(100)]
         public string? Category { get; set; }
 
+        [StringLength(500)]
+        public string? Notes { get; set; }
+
         [Required]
         public Guid CompanyId { get; set; }
+
+        [Required]
+        public Guid UserId { get; set; }
 
         public List<CreateBudgetLineDto> BudgetLines { get; set; } = new();
     }

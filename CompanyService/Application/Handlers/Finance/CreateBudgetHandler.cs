@@ -24,7 +24,9 @@ namespace CompanyService.Application.Handlers.Finance
                 Month = request.Month,
                 BudgetedAmount = request.BudgetedAmount,
                 Category = request.Category,
+                Notes = request.Notes,
                 CompanyId = request.CompanyId,
+                UserId = request.UserId,
                 BudgetLines = request.BudgetLines.Select(bl => new CreateBudgetLineDto
                 {
                     Description = bl.Description,

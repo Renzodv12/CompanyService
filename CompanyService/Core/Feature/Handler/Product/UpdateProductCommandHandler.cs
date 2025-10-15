@@ -38,6 +38,25 @@ namespace CompanyService.Core.Feature.Handler.Product
             if (category == null)
                 throw new DefaultException("La categoría especificada no existe.");
 
+            // Validaciones de negocio
+            if (request.Price <= 0)
+                throw new DefaultException("El precio debe ser mayor a cero.");
+            
+            if (request.Cost < 0)
+                throw new DefaultException("El costo no puede ser negativo.");
+            
+            if (request.Cost > request.Price)
+                throw new DefaultException("El costo no puede ser mayor al precio (generaría pérdida).");
+            
+            if (request.MinStock < 0)
+                throw new DefaultException("El stock mínimo no puede ser negativo.");
+            
+            if (request.MaxStock < 0)
+                throw new DefaultException("El stock máximo no puede ser negativo.");
+            
+            if (request.MinStock > request.MaxStock)
+                throw new DefaultException("El stock mínimo no puede ser mayor al stock máximo.");
+
             // Actualizar producto
             product.Name = request.Name;
             product.Description = request.Description;

@@ -309,6 +309,9 @@ namespace CompanyService.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
@@ -337,6 +340,9 @@ namespace CompanyService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime>("LastModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
@@ -349,6 +355,9 @@ namespace CompanyService.Migrations
                     b.Property<string>("RejectionReason")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime>("RequestDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("RequestedBy")
                         .HasColumnType("uuid");
@@ -387,6 +396,9 @@ namespace CompanyService.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
@@ -404,6 +416,9 @@ namespace CompanyService.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
+
+                    b.Property<DateTime>("LastModifiedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Level")
                         .HasColumnType("integer");
@@ -430,6 +445,9 @@ namespace CompanyService.Migrations
 
                     b.Property<int>("RequiredApprovals")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("RequiresAllApprovers")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("RequiresApproval")
                         .HasColumnType("boolean");
@@ -1338,11 +1356,9 @@ namespace CompanyService.Migrations
 
             modelBuilder.Entity("CompanyService.Core.Entities.CompanyMenuConfiguration", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
@@ -1357,8 +1373,8 @@ namespace CompanyService.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
-                    b.Property<int>("MenuId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("MenuId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -2197,11 +2213,9 @@ namespace CompanyService.Migrations
 
             modelBuilder.Entity("CompanyService.Core.Entities.Menu", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -2229,8 +2243,8 @@ namespace CompanyService.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Route")
                         .HasMaxLength(200)
@@ -3414,6 +3428,10 @@ namespace CompanyService.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -3472,7 +3490,6 @@ namespace CompanyService.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ElectronicInvoiceId")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 

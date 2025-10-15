@@ -1345,7 +1345,7 @@ namespace CompanyService.Core.Services
                 RejectedCount = approvals.Count(a => a.Status == ApprovalStatus.Rejected),
                 ApprovalsByLevel = approvals.GroupBy(a => a.ApprovalLevel.Name)
                     .Select(g => new { Level = g.Key, Count = g.Count() }),
-                ApprovalsByUser = approvals.GroupBy(a => a.ApproverUser.Name)
+                ApprovalsByUser = approvals.GroupBy(a => a.ApproverUser != null ? $"{a.ApproverUser.FirstName} {a.ApproverUser.LastName}".Trim() : "")
                     .Select(g => new { User = g.Key, Count = g.Count() })
             };
 
@@ -1501,8 +1501,55 @@ namespace CompanyService.Core.Services
             {
                 _logger.LogInformation("Updating purchase order {Id} with request: {Request}", id, request);
                 
-                // TODO: Implement actual update logic
-                throw new NotImplementedException("UpdatePurchaseOrderAsync not implemented");
+                var purchaseOrder = await GetPurchaseOrderByIdAsync(id);
+                if (purchaseOrder == null)
+                    throw new ArgumentException($"Purchase order with ID {id} not found");
+
+                // Actualizar datos principales
+                purchaseOrder.SupplierId = request.SupplierId;
+                purchaseOrder.OrderDate = request.OrderDate;
+                purchaseOrder.ExpectedDeliveryDate = request.ExpectedDeliveryDate;
+                purchaseOrder.SubTotal = request.SubTotal;
+                purchaseOrder.TaxAmount = request.TaxAmount;
+                purchaseOrder.DiscountAmount = request.DiscountAmount;
+                purchaseOrder.TotalAmount = request.TotalAmount;
+                purchaseOrder.Notes = request.Notes;
+                purchaseOrder.PaymentTerms = request.PaymentTerms;
+                purchaseOrder.DeliveryTerms = request.DeliveryTerms;
+                purchaseOrder.ModifiedDate = DateTime.UtcNow;
+
+                // Actualizar items
+                purchaseOrder.Items.Clear();
+                foreach (var itemRequest in request.Items)
+                {
+                    var product = await _context.Products.FindAsync(itemRequest.ProductId);
+                    if (product == null)
+                        throw new ArgumentException($"Product with ID {itemRequest.ProductId} not found");
+
+                    var item = new PurchaseOrderItem
+                    {
+                        Id = itemRequest.Id ?? Guid.NewGuid(),
+                        PurchaseOrderId = id,
+                        ProductId = itemRequest.ProductId,
+                        Quantity = itemRequest.Quantity,
+                        UnitPrice = itemRequest.UnitPrice,
+                        DiscountAmount = itemRequest.DiscountPercentage > 0 ? 
+                            (itemRequest.Quantity * itemRequest.UnitPrice * itemRequest.DiscountPercentage / 100) : 0,
+                        TaxAmount = itemRequest.TaxPercentage > 0 ? 
+                            ((itemRequest.Quantity * itemRequest.UnitPrice) * itemRequest.TaxPercentage / 100) : 0,
+                        LineTotal = itemRequest.LineTotal,
+                        Description = itemRequest.Notes,
+                        Unit = product.Unit,
+                        ReceivedQuantity = 0,
+                        RemainingQuantity = itemRequest.Quantity,
+                        CreatedDate = DateTime.UtcNow,
+                        ModifiedDate = DateTime.UtcNow
+                    };
+
+                    purchaseOrder.Items.Add(item);
+                }
+
+                return await UpdatePurchaseOrderAsync(purchaseOrder);
             }
             catch (Exception ex)
             {
@@ -1658,7 +1705,7 @@ namespace CompanyService.Core.Services
                 ApprovalLevelName = a.ApprovalLevel?.Name ?? string.Empty,
                 Level = a.ApprovalLevel?.Level ?? 0,
                 UserId = a.RequestedBy,
-                UserName = a.RequestedByUser?.Name ?? string.Empty,
+                UserName = a.RequestedByUser != null ? $"{a.RequestedByUser.FirstName} {a.RequestedByUser.LastName}".Trim() : string.Empty,
                 Status = a.Status,
                 DocumentAmount = a.DocumentAmount,
                 Comments = a.Comments,

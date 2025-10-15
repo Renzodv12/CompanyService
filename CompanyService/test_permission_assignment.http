@@ -1,0 +1,94 @@
+### Comparación de Asignación de Permisos
+
+# Variables
+@baseUrl = http://localhost:5001
+@token = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ0eXBlYXV0aCI6Ikdvb2dsZUF1dGhlbnRpY2F0b3IiLCIyZmEiOiJUcnVlIiwibmFtZWlkIjoiMDRjYTFmMTktNTI2MC00Zjc0LTg1MTktOTZmMDk5MWM1YzQzIiwianRpIjoiZDZhZDJhZDMtODQzZC00ZjMyLTlmYWYtMGU1NjhlZDU0YTRkIiwiaWF0IjoxNzU4NTA4MTAyLCJzdWIiOiJSZW56byIsImVtYWlsIjoicmVuem9kcmFnb3R0bzUwQGdtYWlsLmNvbSIsIkZpcnN0TmFtZSI6IlJlbnpvIiwiTGFzdE5hbWUiOiJEcmFnb3R0byIsIm5iZiI6MTc1ODUwODEwMiwiZXhwIjoxNzU4NTI5NzAyfQ.RW9dur7CGhDt7bMQY4PFGBrdj_r9VQjMvRAyzmdIi-6dRs2wR8GdmnknsdKFfWZTK0KAzy67JVbqehy9f009vQ
+@companyId = 123e4567-e89b-12d3-a456-426614174000
+@roleId = 456e7890-e89b-12d3-a456-426614174001
+
+### 1. ASIGNACIÓN BÁSICA (Solo View por defecto)
+# Este endpoint ahora asigna solo "View" por defecto
+POST {{baseUrl}}/api/companies/{{companyId}}/roles/{{roleId}}/permissions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "permissionIds": ["permission-id-1", "permission-id-2"]
+}
+
+### 2. ASIGNACIÓN GRANULAR (Con acciones específicas)
+# Este endpoint permite especificar exactamente qué acciones asignar
+POST {{baseUrl}}/api/companies/{{companyId}}/roles/{{roleId}}/permissions/with-actions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "permissions": [
+    {
+      "permissionId": "permission-id-1",
+      "actions": ["View", "Create", "Edit"]
+    },
+    {
+      "permissionId": "permission-id-2", 
+      "actions": ["View", "Delete"]
+    },
+    {
+      "permissionId": "permission-id-3",
+      "actions": ["View"]
+    }
+  ]
+}
+
+### 3. Ejemplo: Rol de Administrador (Todas las acciones)
+POST {{baseUrl}}/api/companies/{{companyId}}/roles/{{roleId}}/permissions/with-actions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "permissions": [
+    {
+      "permissionId": "permission-id-1",
+      "actions": ["View", "Create", "Edit", "Delete"]
+    },
+    {
+      "permissionId": "permission-id-2",
+      "actions": ["View", "Create", "Edit", "Delete"]
+    }
+  ]
+}
+
+### 4. Ejemplo: Rol de Usuario (Solo lectura)
+POST {{baseUrl}}/api/companies/{{companyId}}/roles/{{roleId}}/permissions/with-actions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "permissions": [
+    {
+      "permissionId": "permission-id-1",
+      "actions": ["View"]
+    },
+    {
+      "permissionId": "permission-id-2",
+      "actions": ["View"]
+    }
+  ]
+}
+
+### 5. Ejemplo: Rol de Editor (Ver y Editar, sin eliminar)
+POST {{baseUrl}}/api/companies/{{companyId}}/roles/{{roleId}}/permissions/with-actions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "permissions": [
+    {
+      "permissionId": "permission-id-1",
+      "actions": ["View", "Create", "Edit"]
+    },
+    {
+      "permissionId": "permission-id-2",
+      "actions": ["View", "Edit"]
+    }
+  ]
+}

@@ -99,7 +99,7 @@ namespace CompanyService.Infrastructure.Services
                     {
                         Id = log.Id,
                         UserId = log.UserId,
-                        UserName = log.User.Name,
+                        UserName = $"{log.User.FirstName} {log.User.LastName}".Trim(),
                         CompanyId = log.CompanyId,
                         Action = log.Action,
                         ReportId = log.ReportId,
@@ -147,7 +147,7 @@ namespace CompanyService.Infrastructure.Services
                     {
                         Id = log.Id,
                         UserId = log.UserId,
-                        UserName = log.User.Name,
+                        UserName = $"{log.User.FirstName} {log.User.LastName}".Trim(),
                         CompanyId = log.CompanyId,
                         Action = log.Action,
                         ReportId = log.ReportId,

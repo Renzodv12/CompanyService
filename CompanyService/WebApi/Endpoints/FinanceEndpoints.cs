@@ -77,6 +77,14 @@ namespace CompanyService.WebApi.Endpoints
                 .Produces(StatusCodes.Status201Created)
                 .WithOpenApi();
 
+            app.MapPut("/companies/{companyId:guid}/finance/accounts-payable/{id:guid}", UpdateAccountPayable)
+                .WithName("UpdateAccountPayable")
+                .WithTags("Finance")
+                .RequireAuthorization()
+                .Accepts<UpdateAccountPayableRequest>("application/json")
+                .Produces(StatusCodes.Status200OK)
+                .WithOpenApi();
+
             // Budget Endpoints
             app.MapPost("/companies/{companyId:guid}/finance/budgets", CreateBudget)
                 .WithName("CreateBudget")
@@ -106,6 +114,47 @@ namespace CompanyService.WebApi.Endpoints
                 .RequireAuthorization()
                 .Accepts<UpdateBudgetRequest>("application/json")
                 .Produces(StatusCodes.Status200OK)
+                .WithOpenApi();
+
+            app.MapDelete("/companies/{companyId:guid}/finance/budgets/{id:guid}", DeleteBudget)
+                .WithName("DeleteBudget")
+                .WithTags("Finance")
+                .RequireAuthorization()
+                .Produces(StatusCodes.Status200OK)
+                .WithOpenApi();
+
+            // Budget Summary Endpoint
+            app.MapGet("/companies/{companyId:guid}/finance/budgets/summary", GetBudgetSummary)
+                .WithName("GetBudgetSummary")
+                .WithTags("Finance")
+                .RequireAuthorization()
+                .Produces<BudgetSummaryDto>(StatusCodes.Status200OK)
+                .WithOpenApi();
+
+            // Duplicate Budget Endpoint
+            app.MapPost("/companies/{companyId:guid}/finance/budgets/{id:guid}/duplicate", DuplicateBudget)
+                .WithName("DuplicateBudget")
+                .WithTags("Finance")
+                .RequireAuthorization()
+                .Accepts<DuplicateBudgetRequest>("application/json")
+                .Produces<BudgetResponseDto>(StatusCodes.Status201Created)
+                .WithOpenApi();
+
+            // Compare Budgets Endpoint
+            app.MapPost("/companies/{companyId:guid}/finance/budgets/compare", CompareBudgets)
+                .WithName("CompareBudgets")
+                .WithTags("Finance")
+                .RequireAuthorization()
+                .Accepts<CompareBudgetsRequest>("application/json")
+                .Produces<BudgetComparisonDto>(StatusCodes.Status200OK)
+                .WithOpenApi();
+
+            // Sales Financial Summary Endpoint
+            app.MapGet("/companies/{companyId:guid}/finance/sales-summary", GetSalesFinancialSummary)
+                .WithName("GetSalesFinancialSummary")
+                .WithTags("Finance")
+                .RequireAuthorization()
+                .Produces<SalesFinancialSummaryDto>(StatusCodes.Status200OK)
                 .WithOpenApi();
 
             // Financial Reports Endpoints
@@ -388,12 +437,16 @@ namespace CompanyService.WebApi.Endpoints
                 Year = request.Year,
                 Month = request.StartDate.Month,
                 BudgetedAmount = request.TotalAmount,
+                Category = "General",
+                Notes = "",
                 CompanyId = companyId,
+                UserId = Guid.Parse(claims.UserId!),
                 BudgetLines = request.Lines.Select(line => new CompanyService.Application.Commands.Finance.CreateBudgetLineCommand
                 {
                     Description = $"Account {line.AccountId}",
                     BudgetedAmount = line.Amount,
-                    Notes = line.Notes
+                    Category = "General",
+                    Notes = line.Notes ?? ""
                 }).ToList()
             };
 
@@ -479,10 +532,12 @@ namespace CompanyService.WebApi.Endpoints
                 Name = request.Name,
                 Description = request.Description,
                 Year = request.Year,
-                StartDate = request.StartDate,
-                EndDate = request.EndDate,
-                TotalAmount = request.TotalAmount,
-                Lines = request.Lines,
+                Month = request.Month,
+                BudgetedAmount = request.BudgetedAmount,
+                AccountId = request.AccountId,
+                Category = request.Category,
+                Notes = request.Notes,
+                BudgetLines = request.BudgetLines,
                 CompanyId = companyId,
                 UserId = Guid.Parse(claims.UserId!)
             };
@@ -578,6 +633,194 @@ namespace CompanyService.WebApi.Endpoints
             try
             {
                 var result = await mediator.Send(query);
+                return Results.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        }
+
+        private static async Task<IResult> DeleteBudget(
+            Guid companyId,
+            Guid id,
+            HttpContext httpContext,
+            ISender mediator)
+        {
+            var claims = httpContext.ExtractTokenClaims();
+            if (claims.UserId is null)
+                return Results.Unauthorized();
+
+            var command = new DeleteBudgetCommand
+            {
+                Id = id,
+                CompanyId = companyId,
+                UserId = Guid.Parse(claims.UserId!)
+            };
+
+            try
+            {
+                var result = await mediator.Send(command);
+                return Results.Ok(new { success = result });
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        }
+
+        private static async Task<IResult> GetSalesFinancialSummary(
+            Guid companyId,
+            HttpContext httpContext,
+            ISender mediator,
+            DateTime? fromDate = null,
+            DateTime? toDate = null)
+        {
+            var claims = httpContext.ExtractTokenClaims();
+            if (claims.UserId is null)
+                return Results.Unauthorized();
+
+            var query = new GetSalesFinancialSummaryQuery
+            {
+                CompanyId = companyId,
+                FromDate = fromDate,
+                ToDate = toDate
+            };
+
+            try
+            {
+                var result = await mediator.Send(query);
+                return Results.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        }
+
+        private static async Task<IResult> UpdateAccountPayable(
+            Guid companyId,
+            Guid id,
+            UpdateAccountPayableRequest request,
+            HttpContext httpContext,
+            ISender mediator)
+        {
+            var claims = httpContext.ExtractTokenClaims();
+            if (claims.UserId is null)
+                return Results.Unauthorized();
+
+            var command = new UpdateAccountPayableCommand
+            {
+                Id = id,
+                SupplierId = request.SupplierId,
+                InvoiceNumber = request.InvoiceNumber,
+                Amount = request.TotalAmount,
+                DueDate = request.DueDate,
+                Description = request.Description ?? string.Empty,
+                Notes = request.Notes ?? string.Empty,
+                CompanyId = companyId,
+                UserId = Guid.Parse(claims.UserId!)
+            };
+
+            try
+            {
+                var result = await mediator.Send(command);
+                return Results.Ok(new { success = result });
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        }
+
+        private static async Task<IResult> GetBudgetSummary(
+            Guid companyId,
+            HttpContext httpContext,
+            ISender mediator,
+            int? year = null,
+            int? month = null,
+            DateTime? startDate = null,
+            DateTime? endDate = null)
+        {
+            var claims = httpContext.ExtractTokenClaims();
+            if (claims.UserId is null)
+                return Results.Unauthorized();
+
+            var query = new GetBudgetSummaryQuery
+            {
+                CompanyId = companyId,
+                UserId = Guid.Parse(claims.UserId!),
+                Year = year,
+                Month = month,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            try
+            {
+                var result = await mediator.Send(query);
+                return Results.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        }
+
+        private static async Task<IResult> DuplicateBudget(
+            Guid companyId,
+            Guid id,
+            DuplicateBudgetRequest request,
+            HttpContext httpContext,
+            ISender mediator)
+        {
+            var claims = httpContext.ExtractTokenClaims();
+            if (claims.UserId is null)
+                return Results.Unauthorized();
+
+            var command = new DuplicateBudgetCommand
+            {
+                Id = id,
+                NewName = request.NewName,
+                NewYear = request.NewYear,
+                NewMonth = request.NewMonth,
+                NewStartDate = request.NewStartDate,
+                NewEndDate = request.NewEndDate,
+                CompanyId = companyId,
+                UserId = Guid.Parse(claims.UserId!)
+            };
+
+            try
+            {
+                var result = await mediator.Send(command);
+                return Results.Created($"/companies/{companyId}/finance/budgets/{result.Id}", result);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        }
+
+        private static async Task<IResult> CompareBudgets(
+            Guid companyId,
+            CompareBudgetsRequest request,
+            HttpContext httpContext,
+            ISender mediator)
+        {
+            var claims = httpContext.ExtractTokenClaims();
+            if (claims.UserId is null)
+                return Results.Unauthorized();
+
+            var command = new CompareBudgetsCommand
+            {
+                BudgetIds = request.BudgetIds,
+                CompanyId = companyId,
+                UserId = Guid.Parse(claims.UserId!)
+            };
+
+            try
+            {
+                var result = await mediator.Send(command);
                 return Results.Ok(result);
             }
             catch (Exception ex)

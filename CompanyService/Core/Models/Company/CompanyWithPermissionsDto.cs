@@ -14,6 +14,7 @@ namespace CompanyService.Core.Models.Company
 
     public class PermissionDto
     {
+        public Guid PermissionId { get; set; }
         public string Key { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public List<string> Actions { get; set; }

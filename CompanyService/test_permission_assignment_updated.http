@@ -1,0 +1,39 @@
+### Test AssignPermissionsWithActions - Respuesta con IDs
+POST {{baseUrl}}/api/companies/{{companyId}}/roles/{{roleId}}/permissions/with-actions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "permissions": [
+    {
+      "permissionId": "{{permissionId1}}",
+      "actions": ["View", "Create", "Edit"]
+    },
+    {
+      "permissionId": "{{permissionId2}}",
+      "actions": ["View", "Delete"]
+    }
+  ]
+}
+
+### Respuesta esperada:
+# {
+#   "message": "Permisos asignados con acciones específicas correctamente",
+#   "roleId": "guid-del-rol",
+#   "assignedPermissions": [
+#     {
+#       "rolePermissionId": "guid-del-role-permission-1",
+#       "permissionId": "guid-del-permission-1",
+#       "permissionKey": "products",
+#       "permissionDescription": "Gestión de productos",
+#       "actions": ["View", "Create", "Edit"]
+#     },
+#     {
+#       "rolePermissionId": "guid-del-role-permission-2",
+#       "permissionId": "guid-del-permission-2",
+#       "permissionKey": "customers",
+#       "permissionDescription": "Gestión de clientes",
+#       "actions": ["View", "Delete"]
+#     }
+#   ]
+# }

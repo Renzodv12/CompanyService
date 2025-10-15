@@ -1,6 +1,7 @@
 using CompanyService.Core.Entities;
 using CompanyService.Core.DTOs;
 using CompanyService.Core.Interfaces;
+using CompanyService.Core.Models.Company;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CompanyService.Infrastructure.Context;
@@ -71,9 +72,10 @@ namespace CompanyService.WebApi.Endpoints
                 var permissions = await context.Permissions
                     .Select(p => new PermissionDto
                     {
-                        Id = p.Id,
+                        PermissionId = p.Id,
                         Key = p.Key,
-                        Description = p.Description
+                        Description = p.Description,
+                        Actions = new List<string>() // TODO: Implementar acciones específicas
                     })
                     .ToListAsync();
 
@@ -93,14 +95,15 @@ namespace CompanyService.WebApi.Endpoints
                     .Where(p => p.Id == id)
                     .Select(p => new PermissionDto
                     {
-                        Id = p.Id,
+                        PermissionId = p.Id,
                         Key = p.Key,
-                        Description = p.Description
+                        Description = p.Description,
+                        Actions = new List<string>() // TODO: Implementar acciones específicas
                     })
                     .FirstOrDefaultAsync();
 
                 if (permission == null)
-                    return Results.NotFound(new { error = "Permiso no encontrado" });
+                    return Results.NoContent();
 
                 return Results.Ok(permission);
             }
@@ -133,9 +136,10 @@ namespace CompanyService.WebApi.Endpoints
 
                 var permissionDto = new PermissionDto
                 {
-                    Id = permission.Id,
+                    PermissionId = permission.Id,
                     Key = permission.Key,
-                    Description = permission.Description
+                    Description = permission.Description,
+                    Actions = new List<string>() // TODO: Implementar acciones específicas
                 };
 
                 return Results.Created($"/api/permissions/{permission.Id}", permissionDto);
@@ -152,7 +156,7 @@ namespace CompanyService.WebApi.Endpoints
             {
                 var permission = await context.Permissions.FindAsync(id);
                 if (permission == null)
-                    return Results.NotFound(new { error = "Permiso no encontrado" });
+                    return Results.NoContent();
 
                 // Validar que no exista otro permiso con la misma clave
                 var existingPermission = await context.Permissions
@@ -168,9 +172,10 @@ namespace CompanyService.WebApi.Endpoints
 
                 var permissionDto = new PermissionDto
                 {
-                    Id = permission.Id,
+                    PermissionId = permission.Id,
                     Key = permission.Key,
-                    Description = permission.Description
+                    Description = permission.Description,
+                    Actions = new List<string>() // TODO: Implementar acciones específicas
                 };
 
                 return Results.Ok(permissionDto);
@@ -190,7 +195,7 @@ namespace CompanyService.WebApi.Endpoints
                     .FirstOrDefaultAsync(p => p.Id == id);
 
                 if (permission == null)
-                    return Results.NotFound(new { error = "Permiso no encontrado" });
+                    return Results.NoContent();
 
                 // Verificar si hay roles asignados a este permiso
                 if (permission.RolePermissions.Any())
@@ -217,7 +222,7 @@ namespace CompanyService.WebApi.Endpoints
                     .FirstOrDefaultAsync(p => p.Id == id);
 
                 if (permission == null)
-                    return Results.NotFound(new { error = "Permiso no encontrado" });
+                    return Results.NoContent();
 
                 var roles = permission.RolePermissions.Select(rp => new RoleDto
                 {
@@ -238,12 +243,6 @@ namespace CompanyService.WebApi.Endpoints
     }
 
     // DTOs para los endpoints de permisos
-    public class PermissionDto
-    {
-        public Guid Id { get; set; }
-        public string Key { get; set; }
-        public string Description { get; set; }
-    }
 
     public class CreatePermissionRequest
     {

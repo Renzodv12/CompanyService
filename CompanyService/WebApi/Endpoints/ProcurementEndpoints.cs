@@ -155,7 +155,7 @@ namespace CompanyService.WebApi.Endpoints
             {
                 var purchaseOrder = await procurementService.GetPurchaseOrderByIdAsync(id);
                 if (purchaseOrder == null)
-                    return Results.NotFound($"Orden de compra con ID {id} no encontrada");
+                    return Results.NoContent();
 
                 return Results.Ok(purchaseOrder);
             }
@@ -198,7 +198,7 @@ namespace CompanyService.WebApi.Endpoints
             {
                 var updatedOrder = await procurementService.UpdatePurchaseOrderAsync(id, request);
                 if (updatedOrder == null)
-                    return Results.NotFound($"Orden de compra con ID {id} no encontrada");
+                    return Results.NoContent();
 
                 return Results.Ok(updatedOrder);
             }
@@ -221,7 +221,7 @@ namespace CompanyService.WebApi.Endpoints
             {
                 var updatedOrder = await procurementService.UpdatePurchaseOrderStatusAsync(id, request);
                 if (updatedOrder == null)
-                    return Results.NotFound($"Orden de compra con ID {id} no encontrada");
+                    return Results.NoContent();
 
                 return Results.Ok(updatedOrder);
             }
@@ -310,7 +310,7 @@ namespace CompanyService.WebApi.Endpoints
             {
                 var deleted = await procurementService.DeletePurchaseOrderAsync(id);
                 if (!deleted)
-                    return Results.NotFound($"Orden de compra con ID {id} no encontrada");
+                    return Results.NoContent();
 
                 return Results.NoContent();
             }

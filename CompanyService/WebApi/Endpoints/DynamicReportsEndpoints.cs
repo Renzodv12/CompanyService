@@ -137,7 +137,7 @@ namespace CompanyService.WebApi.Endpoints
             }
             catch (ArgumentException ex)
             {
-                return Results.NotFound(ex.Message);
+                return Results.NoContent();
             }
             catch (UnauthorizedAccessException)
             {
@@ -238,7 +238,7 @@ namespace CompanyService.WebApi.Endpoints
             }
             catch (ArgumentException ex)
             {
-                return Results.NotFound(ex.Message);
+                return Results.NoContent();
             }
             catch (UnauthorizedAccessException)
             {
@@ -284,10 +284,10 @@ namespace CompanyService.WebApi.Endpoints
 
         private static async Task<IResult> GetReportExecutions(
             Guid companyId,
-            int page,
-            int pageSize,
             HttpContext httpContext,
-            IMediator mediator)
+            IMediator mediator,
+            int page = 1,
+            int pageSize = 20)
         {
             try
             {
@@ -332,7 +332,7 @@ namespace CompanyService.WebApi.Endpoints
             }
             catch (ArgumentException ex)
             {
-                return Results.NotFound(ex.Message);
+                return Results.NoContent();
             }
             catch (UnauthorizedAccessException ex)
             {

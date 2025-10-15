@@ -1,0 +1,55 @@
+### Test GetAllPermissions - Ahora con IDs
+GET {{baseUrl}}/api/permissions
+Authorization: Bearer {{token}}
+
+### Respuesta esperada:
+# [
+#   {
+#     "permissionId": "guid-del-permission-1",
+#     "key": "products",
+#     "description": "Gestión de productos",
+#     "actions": []
+#   },
+#   {
+#     "permissionId": "guid-del-permission-2",
+#     "key": "customers",
+#     "description": "Gestión de clientes",
+#     "actions": []
+#   },
+#   {
+#     "permissionId": "guid-del-permission-3",
+#     "key": "sales",
+#     "description": "Gestión de ventas",
+#     "actions": []
+#   }
+# ]
+
+### Test GetPermissionById - También con ID
+GET {{baseUrl}}/api/permissions/{{permissionId}}
+Authorization: Bearer {{token}}
+
+### Respuesta esperada:
+# {
+#   "permissionId": "guid-del-permission",
+#   "key": "products",
+#   "description": "Gestión de productos",
+#   "actions": []
+# }
+
+### Test AssignPermissionsWithActions - Ahora puedes usar los IDs
+POST {{baseUrl}}/api/companies/{{companyId}}/roles/{{roleId}}/permissions/with-actions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "permissions": [
+    {
+      "permissionId": "guid-del-permission-1",
+      "actions": ["View", "Create", "Edit"]
+    },
+    {
+      "permissionId": "guid-del-permission-2",
+      "actions": ["View", "Delete"]
+    }
+  ]
+}

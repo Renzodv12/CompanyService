@@ -17,7 +17,7 @@ namespace CompanyService.Infrastructure.Context.Config
             builder.Property(s => s.DiscountAmount).HasColumnType("decimal(18,2)");
             builder.Property(s => s.TotalAmount).HasColumnType("decimal(18,2)");
             builder.Property(s => s.Notes).HasMaxLength(500);
-            builder.Property(s => s.ElectronicInvoiceId).HasMaxLength(100);
+            builder.Property(s => s.ElectronicInvoiceId).HasMaxLength(100).IsRequired(false);
 
             builder.Property(s => s.CreatedAt).HasDefaultValueSql("now()");
 

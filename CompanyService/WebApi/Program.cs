@@ -45,4 +45,15 @@ app.MapApprovalEndpoints();
 app.MapCompanyManagementEndpoints();
 app.MapFinanceEndpoints();
 app.MapDynamicReportsEndpoints();
+// Mapear endpoints de roles
+app.MapRoleEndpoints();
+
+// Mapear endpoints de permisos
+app.MapPermissionEndpoints();
+
+// Mapear endpoints de usuarios
+app.MapUserEndpoints();
+
+// Mapear endpoints de usuarios de compañías
+app.MapCompanyUserEndpoints();
 app.Run();

@@ -435,8 +435,10 @@ namespace CompanyService.Core.Services
                 Month = dto.Month,
                 BudgetedAmount = dto.BudgetedAmount,
                 ActualAmount = 0,
-                Category = dto.Category,
+                Category = dto.Category ?? string.Empty, // Evitar null en Category
+                Notes = dto.Notes ?? string.Empty, // Evitar null en Notes
                 CompanyId = dto.CompanyId,
+                UserId = dto.UserId, // Usar UserId del DTO
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -450,10 +452,11 @@ namespace CompanyService.Core.Services
                 {
                     Id = Guid.NewGuid(),
                     BudgetId = budget.Id,
+                    LineItem = bl.Description, // Usar Description como LineItem
                     Description = bl.Description,
                     BudgetedAmount = bl.BudgetedAmount,
                     ActualAmount = 0,
-                    Notes = bl.Notes,
+                    Notes = bl.Notes ?? string.Empty, // Evitar null en Notes
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }).ToList();
@@ -537,7 +540,8 @@ namespace CompanyService.Core.Services
             budget.Year = dto.Year;
             budget.Month = dto.Month;
             budget.BudgetedAmount = dto.BudgetedAmount;
-            budget.Category = dto.Category;
+            budget.Category = dto.Category ?? string.Empty; // Evitar null en Category
+            budget.Notes = dto.Notes ?? string.Empty; // Usar Notes del DTO
             budget.UpdatedAt = DateTime.UtcNow;
 
             _budgetRepository.Update(budget);

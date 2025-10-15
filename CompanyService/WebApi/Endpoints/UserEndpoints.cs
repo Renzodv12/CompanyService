@@ -2,6 +2,7 @@ using CompanyService.Core.Entities;
 using CompanyService.Core.DTOs;
 using CompanyService.Core.Interfaces;
 using CompanyService.Core.Enums;
+using CompanyService.Core.Models.Company;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CompanyService.Infrastructure.Context;
@@ -106,10 +107,9 @@ namespace CompanyService.WebApi.Endpoints
                     .Select(u => new UserDto
                     {
                         Id = u.Id,
-                        Name = u.Name,
+                        Name = $"{u.FirstName} {u.LastName}".Trim(),
                         FirstName = u.FirstName,
                         LastName = u.LastName,
-                        Username = u.Username,
                         Email = u.Email,
                         CI = u.CI,
                         TypeAuth = u.TypeAuth.ToString(),
@@ -120,7 +120,7 @@ namespace CompanyService.WebApi.Endpoints
                     .FirstOrDefaultAsync();
 
                 if (user == null)
-                    return Results.NotFound(new { error = "Usuario no encontrado" });
+                    return Results.NoContent();
 
                 return Results.Ok(user);
             }
@@ -145,10 +145,9 @@ namespace CompanyService.WebApi.Endpoints
                     .Select(u => new UserDto
                     {
                         Id = u.Id,
-                        Name = u.Name,
+                        Name = $"{u.FirstName} {u.LastName}".Trim(),
                         FirstName = u.FirstName,
                         LastName = u.LastName,
-                        Username = u.Username,
                         Email = u.Email,
                         CI = u.CI,
                         TypeAuth = u.TypeAuth.ToString(),
@@ -159,7 +158,7 @@ namespace CompanyService.WebApi.Endpoints
                     .FirstOrDefaultAsync();
 
                 if (user == null)
-                    return Results.NotFound(new { error = "Usuario no encontrado" });
+                    return Results.NoContent();
 
                 return Results.Ok(user);
             }
@@ -187,10 +186,8 @@ namespace CompanyService.WebApi.Endpoints
                 var user = new User
                 {
                     Id = Guid.NewGuid(),
-                    Name = request.Name,
                     FirstName = request.FirstName,
                     LastName = request.LastName,
-                    Username = request.Username,
                     Email = request.Email,
                     Password = hashedPassword,
                     Salt = salt,
@@ -207,10 +204,9 @@ namespace CompanyService.WebApi.Endpoints
                 var userDto = new UserDto
                 {
                     Id = user.Id,
-                    Name = user.Name,
+                    Name = $"{user.FirstName} {user.LastName}".Trim(),
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Username = user.Username,
                     Email = user.Email,
                     CI = user.CI,
                     TypeAuth = user.TypeAuth.ToString(),
@@ -233,7 +229,7 @@ namespace CompanyService.WebApi.Endpoints
             {
                 var user = await context.Users.FindAsync(id);
                 if (user == null)
-                    return Results.NotFound(new { error = "Usuario no encontrado" });
+                    return Results.NoContent();
 
                 // Validar que no exista otro usuario con el mismo email
                 var existingUser = await context.Users
@@ -242,10 +238,8 @@ namespace CompanyService.WebApi.Endpoints
                 if (existingUser != null)
                     return Results.BadRequest(new { error = "Ya existe otro usuario con ese email" });
 
-                user.Name = request.Name;
                 user.FirstName = request.FirstName;
                 user.LastName = request.LastName;
-                user.Username = request.Username;
                 user.Email = request.Email;
                 user.CI = request.CI;
                 user.TypeAuth = Enum.Parse<TypeAuth>(request.TypeAuth);
@@ -256,10 +250,9 @@ namespace CompanyService.WebApi.Endpoints
                 var userDto = new UserDto
                 {
                     Id = user.Id,
-                    Name = user.Name,
+                    Name = $"{user.FirstName} {user.LastName}".Trim(),
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Username = user.Username,
                     Email = user.Email,
                     CI = user.CI,
                     TypeAuth = user.TypeAuth.ToString(),
@@ -285,7 +278,7 @@ namespace CompanyService.WebApi.Endpoints
                     .FirstOrDefaultAsync(u => u.Id == id);
 
                 if (user == null)
-                    return Results.NotFound(new { error = "Usuario no encontrado" });
+                    return Results.NoContent();
 
                 // Verificar si el usuario tiene empresas asignadas
                 if (user.UserCompanies.Any())
@@ -312,7 +305,7 @@ namespace CompanyService.WebApi.Endpoints
                     .FirstOrDefaultAsync(u => u.Id == id);
 
                 if (user == null)
-                    return Results.NotFound(new { error = "Usuario no encontrado" });
+                    return Results.NoContent();
 
                 var roles = user.UserCompanies.Select(uc => new RoleDto
                 {
@@ -337,11 +330,11 @@ namespace CompanyService.WebApi.Endpoints
             {
                 var user = await context.Users.FindAsync(userId);
                 if (user == null)
-                    return Results.NotFound(new { error = "Usuario no encontrado" });
+                    return Results.NoContent();
 
                 var role = await context.Roles.FindAsync(roleId);
                 if (role == null)
-                    return Results.NotFound(new { error = "Rol no encontrado" });
+                    return Results.NoContent();
 
                 // Verificar si ya existe la asignación
                 var existingAssignment = await context.UserCompanys
@@ -377,7 +370,7 @@ namespace CompanyService.WebApi.Endpoints
                     .FirstOrDefaultAsync(uc => uc.UserId == userId && uc.RoleId == roleId);
 
                 if (userCompany == null)
-                    return Results.NotFound(new { error = "Asignación de rol no encontrada" });
+                    return Results.NoContent();
 
                 context.UserCompanys.Remove(userCompany);
                 await context.SaveChangesAsync();
@@ -396,7 +389,7 @@ namespace CompanyService.WebApi.Endpoints
             {
                 var user = await context.Users.FindAsync(id);
                 if (user == null)
-                    return Results.NotFound(new { error = "Usuario no encontrado" });
+                    return Results.NoContent();
 
                 // Verificar contraseña actual
                 var currentPasswordHash = HashPassword(request.CurrentPassword, user.Salt);

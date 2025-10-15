@@ -43,18 +43,56 @@ namespace CompanyService.Core.Feature.Handler.Sale
             if (products.Count() != request.Items.Count)
                 throw new DefaultException("Uno o más productos no fueron encontrados.");
 
-            // Validar stock suficiente
+            // Validar stock suficiente y reglas de negocio
             foreach (var item in request.Items)
             {
                 var product = products.First(p => p.Id == item.ProductId);
+                
+                // Validar stock suficiente
                 if (product.Stock < item.Quantity)
                     throw new DefaultException($"Stock insuficiente para el producto {product.Name}. Stock disponible: {product.Stock}");
+                
+                // Validar que el precio unitario no sea negativo
+                if (item.UnitPrice < 0)
+                    throw new DefaultException($"El precio unitario del producto {product.Name} no puede ser negativo");
+                
+                // Validar que el descuento no sea mayor al subtotal del item
+                var itemSubtotal = item.UnitPrice * item.Quantity;
+                if (item.Discount > itemSubtotal)
+                    throw new DefaultException($"El descuento del producto {product.Name} no puede ser mayor al subtotal del item");
+                
+                // Validar que la cantidad sea positiva
+                if (item.Quantity <= 0)
+                    throw new DefaultException($"La cantidad del producto {product.Name} debe ser mayor a cero");
             }
+            
+            // Validar que el descuento total no sea mayor al subtotal
+            var totalSubtotal = request.Items.Sum(i => (i.UnitPrice * i.Quantity) - i.Discount);
+            if (request.DiscountAmount > totalSubtotal)
+                throw new DefaultException("El descuento total no puede ser mayor al subtotal");
 
-            // Generar número de venta
-            var saleCount = await _unitOfWork.Repository<CompanyService.Core.Entities.Sale>()
-                .WhereAsync(s => s.CompanyId == request.CompanyId);
-            var saleNumber = $"V-{DateTime.Now.Year}-{(saleCount.Count() + 1):D6}";
+            // Generar número de venta de manera eficiente
+            //var sales = await _unitOfWork.Repository<CompanyService.Core.Entities.Sale>()
+            //    .WhereAsync(s => s.CompanyId == request.CompanyId && s.SaleNumber.StartsWith($"V-{DateTime.Now.Year}-"));
+            var prefix = $"V-{DateTime.Now.Year}-";
+
+            var sales = await _unitOfWork.Repository<CompanyService.Core.Entities.Sale>()
+                .WhereAsync(s => s.CompanyId == request.CompanyId && s.SaleNumber.Contains(prefix));
+
+
+            var lastSaleNumber = sales.OrderByDescending(s => s.SaleNumber).FirstOrDefault();
+            
+            int nextNumber = 1;
+            if (lastSaleNumber != null)
+            {
+                var lastNumberStr = lastSaleNumber.SaleNumber.Split('-').LastOrDefault();
+                if (int.TryParse(lastNumberStr, out int lastNumber))
+                {
+                    nextNumber = lastNumber + 1;
+                }
+            }
+            
+            var saleNumber = $"V-{DateTime.Now.Year}-{nextNumber:D6}";
 
             // Calcular totales
             decimal subtotal = 0;
@@ -77,8 +115,11 @@ namespace CompanyService.Core.Feature.Handler.Sale
                 });
             }
 
-            // Obtener configuración de impuestos (por simplicidad, usamos 10% IVA)
-            var taxRate = 0.10m;
+            // Obtener configuración de impuestos de la empresa
+            var companySettings = await _unitOfWork.Repository<CompanySettings>()
+                .FirstOrDefaultAsync(cs => cs.CompanyId == request.CompanyId);
+            
+            var taxRate = 0.10m; // Default 10% - TODO: Implementar configuración de impuestos por empresa
             var taxAmount = subtotal * taxRate;
             var totalAmount = subtotal + taxAmount - request.DiscountAmount;
 
@@ -99,6 +140,7 @@ namespace CompanyService.Core.Feature.Handler.Sale
                 CompanyId = request.CompanyId,
                 UserId = Guid.Parse(request.UserId),
                 IsElectronicInvoice = request.GenerateElectronicInvoice,
+                ElectronicInvoiceId = request.GenerateElectronicInvoice ? Guid.NewGuid().ToString() : null,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -111,22 +153,38 @@ namespace CompanyService.Core.Feature.Handler.Sale
                 await _unitOfWork.Repository<SaleDetail>().AddAsync(detail);
             }
 
-            await _unitOfWork.SaveChangesAsync();
-
-            // Actualizar stock de productos
+            // Actualizar stock de productos ANTES de guardar la venta
             foreach (var item in request.Items)
             {
-                await _mediator.Send(new UpdateStockCommand
+                var product = products.First(p => p.Id == item.ProductId);
+                var previousStock = product.Stock;
+                var newStock = previousStock - item.Quantity;
+
+                // Actualizar stock del producto
+                product.Stock = newStock;
+                product.LastModifiedAt = DateTime.UtcNow;
+                _unitOfWork.Repository<CompanyService.Core.Entities.Product>().Update(product);
+
+                // Crear movimiento de stock
+                var stockMovement = new StockMovement
                 {
+                    Id = Guid.NewGuid(),
                     ProductId = item.ProductId,
+                    Type = MovementType.Exit,
                     Quantity = item.Quantity,
-                    MovementType = MovementType.Exit,
+                    PreviousStock = previousStock,
+                    NewStock = newStock,
                     Reason = "Venta",
                     Reference = sale.SaleNumber,
-                    CompanyId = request.CompanyId,
-                    UserId = request.UserId
-                });
+                    UserId = Guid.Parse(request.UserId),
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _unitOfWork.Repository<StockMovement>().AddAsync(stockMovement);
             }
+
+            // Guardar todo en una sola transacción
+            await _unitOfWork.SaveChangesAsync();
 
             // TODO: Si GenerateElectronicInvoice es true, integrar con el servicio de facturación electrónica
 

@@ -16,12 +16,7 @@ namespace CompanyService.Core.Entities
         [Key]
         public Guid Id { get; set; }
 
-        /// <summary>
-        /// Nombre del usuario
-        /// </summary>
-        [Required]
-        [MaxLength(100)]
-        public string Name { get; set; } = string.Empty;
+ 
 
         /// <summary>
         /// Primer nombre del usuario
@@ -42,13 +37,6 @@ namespace CompanyService.Core.Entities
         [MaxLength(255)]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Nombre de usuario
-        /// </summary>
-        [Required]
-        [MaxLength(50)]
-        public string Username { get; set; } = string.Empty;
 
         /// <summary>
         /// Contraseña del usuario

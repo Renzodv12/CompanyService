@@ -1,6 +1,9 @@
 using CompanyService.Core.Entities;
 using CompanyService.Core.DTOs;
 using CompanyService.Core.Interfaces;
+using CompanyService.Core.Models.Company;
+using CompanyService.Core.Utils;
+using CompanyService.Core.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CompanyService.Infrastructure.Context;
@@ -11,14 +14,14 @@ namespace CompanyService.WebApi.Endpoints
     {
         public static IEndpointRouteBuilder MapRoleEndpoints(this IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/roles", GetAllRoles)
+            app.MapGet("/api/companies/{companyId:guid}/roles", GetAllRoles)
                .WithName("GetAllRoles")
                .WithTags("Roles")
                .WithOpenApi()
                .RequireAuthorization()
                .Produces<IEnumerable<RoleDto>>(StatusCodes.Status200OK);
 
-            app.MapGet("/api/roles/{id:guid}", GetRoleById)
+            app.MapGet("/api/companies/{companyId:guid}/roles/{id:guid}", GetRoleById)
                .WithName("GetRoleById")
                .WithTags("Roles")
                .WithOpenApi()
@@ -35,7 +38,7 @@ namespace CompanyService.WebApi.Endpoints
                .Produces<RoleDto>(StatusCodes.Status201Created)
                .Produces(StatusCodes.Status400BadRequest);
 
-            app.MapPut("/api/roles/{id:guid}", UpdateRole)
+            app.MapPut("/api/companies/{companyId:guid}/roles/{id:guid}", UpdateRole)
                .WithName("UpdateRole")
                .WithTags("Roles")
                .WithOpenApi()
@@ -45,7 +48,7 @@ namespace CompanyService.WebApi.Endpoints
                .Produces(StatusCodes.Status404NotFound)
                .Produces(StatusCodes.Status400BadRequest);
 
-            app.MapDelete("/api/roles/{id:guid}", DeleteRole)
+            app.MapDelete("/api/companies/{companyId:guid}/roles/{id:guid}", DeleteRole)
                .WithName("DeleteRole")
                .WithTags("Roles")
                .WithOpenApi()
@@ -53,7 +56,7 @@ namespace CompanyService.WebApi.Endpoints
                .Produces(StatusCodes.Status204NoContent)
                .Produces(StatusCodes.Status404NotFound);
 
-            app.MapGet("/api/roles/{id:guid}/permissions", GetRolePermissions)
+            app.MapGet("/api/companies/{companyId:guid}/roles/{id:guid}/permissions", GetRolePermissions)
                .WithName("GetRolePermissions")
                .WithTags("Roles")
                .WithOpenApi()
@@ -61,7 +64,7 @@ namespace CompanyService.WebApi.Endpoints
                .Produces<IEnumerable<PermissionDto>>(StatusCodes.Status200OK)
                .Produces(StatusCodes.Status404NotFound);
 
-            app.MapPost("/api/roles/{id:guid}/permissions", AssignPermissionsToRole)
+            app.MapPost("/api/companies/{companyId:guid}/roles/{id:guid}/permissions", AssignPermissionsToRole)
                .WithName("AssignPermissionsToRole")
                .WithTags("Roles")
                .WithOpenApi()
@@ -71,7 +74,7 @@ namespace CompanyService.WebApi.Endpoints
                .Produces(StatusCodes.Status404NotFound)
                .Produces(StatusCodes.Status400BadRequest);
 
-            app.MapDelete("/api/roles/{roleId:guid}/permissions/{permissionId:guid}", RemovePermissionFromRole)
+            app.MapDelete("/api/companies/{companyId:guid}/roles/{roleId:guid}/permissions/{permissionId:guid}", RemovePermissionFromRole)
                .WithName("RemovePermissionFromRole")
                .WithTags("Roles")
                .WithOpenApi()
@@ -79,16 +82,27 @@ namespace CompanyService.WebApi.Endpoints
                .Produces(StatusCodes.Status204NoContent)
                .Produces(StatusCodes.Status404NotFound);
 
+            // Endpoint para asignar permisos con acciones específicas
+            app.MapPost("/api/companies/{companyId:guid}/roles/{roleId:guid}/permissions/with-actions", AssignPermissionsWithActions)
+               .WithName("AssignPermissionsWithActions")
+               .WithTags("Roles")
+               .WithOpenApi()
+               .RequireAuthorization()
+               .Accepts<AssignPermissionsWithActionsRequest>("application/json")
+               .Produces(StatusCodes.Status200OK)
+               .Produces(StatusCodes.Status400BadRequest);
+
             return app;
         }
 
-        private static async Task<IResult> GetAllRoles(ApplicationDbContext context)
+        private static async Task<IResult> GetAllRoles(Guid companyId, ApplicationDbContext context)
         {
             try
             {
                 var roles = await context.Roles
                     .Include(r => r.RolePermissions)
                     .ThenInclude(rp => rp.Permission)
+                    .Where(r => r.CompanyId == companyId)
                     .Select(r => new RoleDto
                     {
                         Id = r.Id,
@@ -97,9 +111,10 @@ namespace CompanyService.WebApi.Endpoints
                         CompanyId = r.CompanyId,
                         Permissions = r.RolePermissions.Select(rp => new PermissionDto
                         {
-                            Id = rp.Permission.Id,
+                            PermissionId = rp.PermissionId,
                             Key = rp.Permission.Key,
-                            Description = rp.Permission.Description
+                            Description = rp.Permission.Description,
+                            Actions = ((int)rp.Actions).GetPermissionsNames()
                         }).ToList()
                     })
                     .ToListAsync();
@@ -112,14 +127,14 @@ namespace CompanyService.WebApi.Endpoints
             }
         }
 
-        private static async Task<IResult> GetRoleById(Guid id, ApplicationDbContext context)
+        private static async Task<IResult> GetRoleById(Guid companyId, Guid id, ApplicationDbContext context)
         {
             try
             {
                 var role = await context.Roles
                     .Include(r => r.RolePermissions)
                     .ThenInclude(rp => rp.Permission)
-                    .Where(r => r.Id == id)
+                    .Where(r => r.Id == id && r.CompanyId == companyId)
                     .Select(r => new RoleDto
                     {
                         Id = r.Id,
@@ -128,15 +143,16 @@ namespace CompanyService.WebApi.Endpoints
                         CompanyId = r.CompanyId,
                         Permissions = r.RolePermissions.Select(rp => new PermissionDto
                         {
-                            Id = rp.Permission.Id,
+                            PermissionId = rp.PermissionId,
                             Key = rp.Permission.Key,
-                            Description = rp.Permission.Description
+                            Description = rp.Permission.Description,
+                            Actions = ((int)rp.Actions).GetPermissionsNames()
                         }).ToList()
                     })
                     .FirstOrDefaultAsync();
 
                 if (role == null)
-                    return Results.NotFound(new { error = "Rol no encontrado" });
+                    return Results.NoContent();
 
                 return Results.Ok(role);
             }
@@ -150,6 +166,11 @@ namespace CompanyService.WebApi.Endpoints
         {
             try
             {
+                // Validar que la compañía existe
+                var company = await context.Companies.FindAsync(request.CompanyId);
+                if (company == null)
+                    return Results.BadRequest(new { error = "La compañía especificada no existe" });
+
                 // Validar que no exista un rol con el mismo nombre en la empresa
                 var existingRole = await context.Roles
                     .FirstOrDefaultAsync(r => r.Name == request.Name && r.CompanyId == request.CompanyId);
@@ -185,17 +206,19 @@ namespace CompanyService.WebApi.Endpoints
             }
         }
 
-        private static async Task<IResult> UpdateRole(Guid id, UpdateRoleRequest request, ApplicationDbContext context)
+        private static async Task<IResult> UpdateRole(Guid companyId, Guid id, UpdateRoleRequest request, ApplicationDbContext context)
         {
             try
             {
-                var role = await context.Roles.FindAsync(id);
+                var role = await context.Roles
+                    .FirstOrDefaultAsync(r => r.Id == id && r.CompanyId == companyId);
+                    
                 if (role == null)
-                    return Results.NotFound(new { error = "Rol no encontrado" });
+                    return Results.NoContent();
 
                 // Validar que no exista otro rol con el mismo nombre en la empresa
                 var existingRole = await context.Roles
-                    .FirstOrDefaultAsync(r => r.Name == request.Name && r.CompanyId == role.CompanyId && r.Id != id);
+                    .FirstOrDefaultAsync(r => r.Name == request.Name && r.CompanyId == companyId && r.Id != id);
 
                 if (existingRole != null)
                     return Results.BadRequest(new { error = "Ya existe otro rol con ese nombre en la empresa" });
@@ -222,17 +245,17 @@ namespace CompanyService.WebApi.Endpoints
             }
         }
 
-        private static async Task<IResult> DeleteRole(Guid id, ApplicationDbContext context)
+        private static async Task<IResult> DeleteRole(Guid companyId, Guid id, ApplicationDbContext context)
         {
             try
             {
                 var role = await context.Roles
                     .Include(r => r.RolePermissions)
                     .Include(r => r.UserCompanies)
-                    .FirstOrDefaultAsync(r => r.Id == id);
+                    .FirstOrDefaultAsync(r => r.Id == id && r.CompanyId == companyId);
 
                 if (role == null)
-                    return Results.NotFound(new { error = "Rol no encontrado" });
+                    return Results.NoContent();
 
                 // Verificar si hay usuarios asignados a este rol
                 if (role.UserCompanies.Any())
@@ -253,23 +276,24 @@ namespace CompanyService.WebApi.Endpoints
             }
         }
 
-        private static async Task<IResult> GetRolePermissions(Guid id, ApplicationDbContext context)
+        private static async Task<IResult> GetRolePermissions(Guid companyId, Guid id, ApplicationDbContext context)
         {
             try
             {
                 var role = await context.Roles
                     .Include(r => r.RolePermissions)
                     .ThenInclude(rp => rp.Permission)
-                    .FirstOrDefaultAsync(r => r.Id == id);
+                    .FirstOrDefaultAsync(r => r.Id == id && r.CompanyId == companyId);
 
                 if (role == null)
-                    return Results.NotFound(new { error = "Rol no encontrado" });
+                    return Results.NoContent();
 
                 var permissions = role.RolePermissions.Select(rp => new PermissionDto
                 {
-                    Id = rp.Permission.Id,
+                    PermissionId = rp.PermissionId, 
                     Key = rp.Permission.Key,
-                    Description = rp.Permission.Description
+                    Description = rp.Permission.Description,
+                    Actions = ((int)rp.Actions).GetPermissionsNames()
                 }).ToList();
 
                 return Results.Ok(permissions);
@@ -280,16 +304,16 @@ namespace CompanyService.WebApi.Endpoints
             }
         }
 
-        private static async Task<IResult> AssignPermissionsToRole(Guid id, AssignPermissionsRequest request, ApplicationDbContext context)
+        private static async Task<IResult> AssignPermissionsToRole(Guid companyId, Guid id, AssignPermissionsRequest request, ApplicationDbContext context)
         {
             try
             {
                 var role = await context.Roles
                     .Include(r => r.RolePermissions)
-                    .FirstOrDefaultAsync(r => r.Id == id);
+                    .FirstOrDefaultAsync(r => r.Id == id && r.CompanyId == companyId);
 
                 if (role == null)
-                    return Results.NotFound(new { error = "Rol no encontrado" });
+                    return Results.NoContent();
 
                 // Verificar que todos los permisos existan
                 var permissions = await context.Permissions
@@ -302,13 +326,14 @@ namespace CompanyService.WebApi.Endpoints
                 // Eliminar permisos actuales
                 context.RolePermissions.RemoveRange(role.RolePermissions);
 
-                // Agregar nuevos permisos
+                // Agregar nuevos permisos con solo View por defecto
                 foreach (var permissionId in request.PermissionIds)
                 {
                     role.RolePermissions.Add(new RolePermission
                     {
                         RoleId = id,
-                        PermissionId = permissionId
+                        PermissionId = permissionId,
+                        Actions = PermissionAction.View // Solo View por defecto, otras acciones se asignan explícitamente
                     });
                 }
 
@@ -322,15 +347,16 @@ namespace CompanyService.WebApi.Endpoints
             }
         }
 
-        private static async Task<IResult> RemovePermissionFromRole(Guid roleId, Guid permissionId, ApplicationDbContext context)
+        private static async Task<IResult> RemovePermissionFromRole(Guid companyId, Guid roleId, Guid permissionId, ApplicationDbContext context)
         {
             try
             {
                 var rolePermission = await context.RolePermissions
-                    .FirstOrDefaultAsync(rp => rp.RoleId == roleId && rp.PermissionId == permissionId);
+                    .Include(rp => rp.Role)
+                    .FirstOrDefaultAsync(rp => rp.RoleId == roleId && rp.PermissionId == permissionId && rp.Role.CompanyId == companyId);
 
                 if (rolePermission == null)
-                    return Results.NotFound(new { error = "Relación rol-permiso no encontrada" });
+                    return Results.NoContent();
 
                 context.RolePermissions.Remove(rolePermission);
                 await context.SaveChangesAsync();
@@ -342,33 +368,90 @@ namespace CompanyService.WebApi.Endpoints
                 return Results.BadRequest(new { error = "Error al remover permiso del rol", details = ex.Message });
             }
         }
+
+        private static async Task<IResult> AssignPermissionsWithActions(Guid companyId, Guid roleId, AssignPermissionsWithActionsRequest request, ApplicationDbContext context)
+        {
+            try
+            {
+                var role = await context.Roles
+                    .Include(r => r.RolePermissions)
+                    .FirstOrDefaultAsync(r => r.Id == roleId && r.CompanyId == companyId);
+
+                if (role == null)
+                    return Results.NoContent();
+
+                // Verificar que todos los permisos existan
+                var permissionIds = request.Permissions.Select(p => p.PermissionId).ToList();
+                var permissions = await context.Permissions
+                    .Where(p => permissionIds.Contains(p.Id))
+                    .ToListAsync();
+
+                if (permissions.Count != permissionIds.Count)
+                    return Results.BadRequest(new { error = "Algunos permisos no existen" });
+
+                // Eliminar permisos actuales de forma más segura
+                var existingPermissions = await context.RolePermissions
+                    .Where(rp => rp.RoleId == roleId)
+                    .ToListAsync();
+                
+                context.RolePermissions.RemoveRange(existingPermissions);
+                
+                // Guardar cambios para eliminar los permisos existentes
+                await context.SaveChangesAsync();
+
+                // Agregar nuevos permisos con acciones específicas
+                foreach (var permissionAssignment in request.Permissions)
+                {
+                    var actions = PermissionAction.None;
+                    
+                    // Convertir strings a PermissionAction flags
+                    foreach (var actionString in permissionAssignment.Actions)
+                    {
+                        if (Enum.TryParse<PermissionAction>(actionString, true, out var action))
+                        {
+                            actions |= action;
+                        }
+                    }
+
+                    var newRolePermission = new RolePermission
+                    {
+                        Id = Guid.NewGuid(),
+                        RoleId = roleId,
+                        PermissionId = permissionAssignment.PermissionId,
+                        Actions = actions
+                    };
+                    
+                    context.RolePermissions.Add(newRolePermission);
+                }
+
+                await context.SaveChangesAsync();
+
+                // Devolver información detallada de los permisos asignados
+                var assignedPermissions = await context.RolePermissions
+                    .Where(rp => rp.RoleId == roleId)
+                    .Include(rp => rp.Permission)
+                    .Select(rp => new
+                    {
+                        RolePermissionId = rp.Id,
+                        PermissionId = rp.PermissionId,
+                        PermissionKey = rp.Permission.Key,
+                        PermissionDescription = rp.Permission.Description,
+                        Actions = ((int)rp.Actions).GetPermissionsNames()
+                    })
+                    .ToListAsync();
+
+                return Results.Ok(new 
+                { 
+                    message = "Permisos asignados con acciones específicas correctamente",
+                    roleId = roleId,
+                    assignedPermissions = assignedPermissions
+                });
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = "Error al asignar permisos con acciones", details = ex.Message });
+            }
+        }
     }
 
-    // DTOs para los endpoints de roles
-    public class RoleDto
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public Guid CompanyId { get; set; }
-        public List<PermissionDto> Permissions { get; set; } = new();
-    }
-
-    public class CreateRoleRequest
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public Guid CompanyId { get; set; }
-    }
-
-    public class UpdateRoleRequest
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-    }
-
-    public class AssignPermissionsRequest
-    {
-        public List<Guid> PermissionIds { get; set; } = new();
-    }
 }

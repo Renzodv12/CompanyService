@@ -1,0 +1,69 @@
+### Test GetRolePermissions - Ahora con PermissionId correcto
+GET {{baseUrl}}/api/companies/{{companyId}}/roles/{{roleId}}/permissions
+Authorization: Bearer {{token}}
+
+### Respuesta esperada:
+# [
+#   {
+#     "permissionId": "guid-del-permission-1",
+#     "key": "products",
+#     "description": "Gestión de productos",
+#     "actions": ["View", "Create", "Edit"]
+#   },
+#   {
+#     "permissionId": "guid-del-permission-2",
+#     "key": "customers",
+#     "description": "Gestión de clientes",
+#     "actions": ["View", "Delete"]
+#   }
+# ]
+
+### Test GetAllRoles - También con PermissionId correcto
+GET {{baseUrl}}/api/companies/{{companyId}}/roles
+Authorization: Bearer {{token}}
+
+### Respuesta esperada:
+# [
+#   {
+#     "id": "guid-del-rol",
+#     "name": "Administrador",
+#     "description": "Rol con permisos completos",
+#     "companyId": "guid-de-la-empresa",
+#     "permissions": [
+#       {
+#         "permissionId": "guid-del-permission-1",
+#         "key": "products",
+#         "description": "Gestión de productos",
+#         "actions": ["View", "Create", "Edit", "Delete"]
+#       },
+#       {
+#         "permissionId": "guid-del-permission-2",
+#         "key": "customers",
+#         "description": "Gestión de clientes",
+#         "actions": ["View", "Create", "Edit"]
+#       }
+#     ]
+#   }
+# ]
+
+### Test GetRoleById - También con PermissionId correcto
+GET {{baseUrl}}/api/companies/{{companyId}}/roles/{{roleId}}
+Authorization: Bearer {{token}}
+
+### Respuesta esperada:
+# {
+#   "id": "guid-del-rol",
+#   "name": "Administrador",
+#   "description": "Rol con permisos completos",
+#   "companyId": "guid-de-la-empresa",
+#   "permissions": [
+#     {
+#       "permissionId": "guid-del-permission-1",
+#       "key": "products",
+#       "description": "Gestión de productos",
+#       "actions": ["View", "Create", "Edit", "Delete"]
+#     }
+#   ]
+# }
+
+

@@ -12,10 +12,12 @@ namespace CompanyService.Core.Feature.Commands.Finance
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
         public int Year { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public decimal TotalAmount { get; set; }
-        public List<UpdateBudgetLineRequest> Lines { get; set; } = new();
+        public int? Month { get; set; }
+        public decimal BudgetedAmount { get; set; }
+        public Guid? AccountId { get; set; }
+        public string? Category { get; set; }
+        public string? Notes { get; set; }
+        public List<UpdateBudgetLineRequest> BudgetLines { get; set; } = new();
         public Guid CompanyId { get; set; }
         public Guid UserId { get; set; }
     }

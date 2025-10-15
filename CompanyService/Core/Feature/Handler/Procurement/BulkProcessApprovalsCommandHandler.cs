@@ -70,7 +70,7 @@ namespace CompanyService.Core.Feature.Handler.Procurement
                     ApprovalLevelName = approval.ApprovalLevel?.Name ?? "",
                     Level = approval.ApprovalLevel?.Level ?? 0,
                     UserId = approval.ApproverId,
-                    UserName = approval.ApproverUser?.Name ?? "",
+                    UserName = approval.ApproverUser != null ? $"{approval.ApproverUser.FirstName} {approval.ApproverUser.LastName}".Trim() : "",
                     Status = approval.Status,
                     DocumentAmount = approval.DocumentAmount,
                     Comments = approval.Comments,

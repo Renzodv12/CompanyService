@@ -3,6 +3,7 @@ using CompanyService.Core.Feature.Querys.Product;
 using CompanyService.Core.Models.Product;
 using CompanyService.WebApi.Extensions;
 using MediatR;
+using FluentValidation;
 
 namespace CompanyService.WebApi.Endpoints
 {
@@ -62,9 +63,20 @@ namespace CompanyService.WebApi.Endpoints
         private static async Task<IResult> CreateProduct(
             Guid companyId,
             CreateProductRequest request,
+            IValidator<CreateProductRequest> validator,
             HttpContext httpContext,
             ISender mediator)
         {
+            var validationResult = await validator.ValidateAsync(request);
+            if (!validationResult.IsValid)
+            {
+                return Results.BadRequest(validationResult.Errors.Select(e => new
+                {
+                    Property = e.PropertyName,
+                    Error = e.ErrorMessage
+                }));
+            }
+
             var claims = httpContext.ExtractTokenClaims();
             if (claims.UserId is null)
                 return Results.Unauthorized();
@@ -93,9 +105,13 @@ namespace CompanyService.WebApi.Endpoints
                 var productId = await mediator.Send(command);
                 return Results.Created($"/companies/{companyId}/products/{productId}", new { Id = productId });
             }
-            catch (Exception ex)
+            catch (ApplicationException ex)
             {
                 return Results.BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem("Error interno del servidor", statusCode: 500);
             }
         }
 
@@ -199,12 +215,23 @@ namespace CompanyService.WebApi.Endpoints
         }
 
         private static async Task<IResult> UpdateProduct(
-    Guid companyId,
-    Guid productId,
-    UpdateProductRequest request,
-    HttpContext httpContext,
-    ISender mediator)
+            Guid companyId,
+            Guid productId,
+            UpdateProductRequest request,
+            IValidator<UpdateProductRequest> validator,
+            HttpContext httpContext,
+            ISender mediator)
         {
+            var validationResult = await validator.ValidateAsync(request);
+            if (!validationResult.IsValid)
+            {
+                return Results.BadRequest(validationResult.Errors.Select(e => new
+                {
+                    Property = e.PropertyName,
+                    Error = e.ErrorMessage
+                }));
+            }
+
             var claims = httpContext.ExtractTokenClaims();
             if (claims.UserId is null)
                 return Results.Unauthorized();
@@ -233,9 +260,13 @@ namespace CompanyService.WebApi.Endpoints
                 await mediator.Send(command);
                 return Results.Ok();
             }
-            catch (Exception ex)
+            catch (ApplicationException ex)
             {
                 return Results.BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem("Error interno del servidor", statusCode: 500);
             }
         }
     }

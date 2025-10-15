@@ -1,0 +1,33 @@
+### Script para verificar y crear compañías
+
+# Variables
+@baseUrl = http://localhost:5001
+@token = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ0eXBlYXV0aCI6Ikdvb2dsZUF1dGhlbnRpY2F0b3IiLCIyZmEiOiJUcnVlIiwibmFtZWlkIjoiMDRjYTFmMTktNTI2MC00Zjc0LTg1MTktOTZmMDk5MWM1YzQzIiwianRpIjoiZDZhZDJhZDMtODQzZC00ZjMyLTlmYWYtMGU1NjhlZDU0YTRkIiwiaWF0IjoxNzU4NTA4MTAyLCJzdWIiOiJSZW56byIsImVtYWlsIjoicmVuem9kcmFnb3R0bzUwQGdtYWlsLmNvbSIsIkZpcnN0TmFtZSI6IlJlbnpvIiwiTGFzdE5hbWUiOiJEcmFnb3R0byIsIm5iZiI6MTc1ODUwODEwMiwiZXhwIjoxNzU4NTI5NzAyfQ.RW9dur7CGhDt7bMQY4PFGBrdj_r9VQjMvRAyzmdIi-6dRs2wR8GdmnknsdKFfWZTK0KAzy67JVbqehy9f009vQ
+
+### 1. Obtener compañías del usuario
+GET {{baseUrl}}/api/companies/user
+Authorization: Bearer {{token}}
+
+### 2. Crear una compañía de prueba si no existe
+POST {{baseUrl}}/api/companies
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Empresa de Prueba",
+  "ruc": "12345678901",
+  "address": "Dirección de Prueba",
+  "phone": "0987654321",
+  "email": "prueba@empresa.com"
+}
+
+### 3. Crear un rol para la compañía (usar el CompanyId de la respuesta anterior)
+POST {{baseUrl}}/api/roles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Administrador",
+  "description": "Rol de administrador con todos los permisos",
+  "companyId": "REEMPLAZAR_CON_COMPANY_ID_REAL"
+}
