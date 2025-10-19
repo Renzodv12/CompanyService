@@ -17,6 +17,8 @@ namespace CompanyService.Core.DTOs.Finance
         public Guid? AccountId { get; set; }
         public string? AccountName { get; set; }
         public string? Category { get; set; }
+        public string? Type { get; set; }
+        public int Status { get; set; }
         public string? Notes { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

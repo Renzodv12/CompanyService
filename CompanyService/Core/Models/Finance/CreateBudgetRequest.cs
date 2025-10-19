@@ -24,6 +24,9 @@ namespace CompanyService.Core.Models.Finance
         [Range(0, double.MaxValue, ErrorMessage = "El monto total debe ser mayor o igual a 0")]
         public decimal TotalAmount { get; set; }
 
+        [StringLength(50)]
+        public string? Type { get; set; } = "Monthly"; // Annual, Quarterly, Monthly, Project
+
         public List<CreateBudgetLineRequest> Lines { get; set; } = new();
     }
 

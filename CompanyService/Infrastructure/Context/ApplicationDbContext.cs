@@ -72,6 +72,7 @@ namespace CompanyService.Infrastructure.Context
         public DbSet<CashFlow> CashFlows => Set<CashFlow>();
         public DbSet<Budget> Budgets => Set<Budget>();
         public DbSet<BudgetLine> BudgetLines => Set<BudgetLine>();
+        public DbSet<ChartOfAccounts> ChartOfAccounts => Set<ChartOfAccounts>();
         
         // Advanced Inventory Module
         public DbSet<Warehouse> Warehouses => Set<Warehouse>();

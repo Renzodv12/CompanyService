@@ -133,5 +133,13 @@ namespace CompanyService.Core.Services
         public const string TaskBoard = "task-board";
         public const string Companies = "companies";
         public const string Menu = "menu";
+        public const string Products = "products";
+        public const string Sales = "sales";
+        public const string Purchases = "purchases";
+        public const string Suppliers = "suppliers";
+        public const string Warehouses = "warehouses";
+        public const string Inventory = "inventory";
+        public const string Reports = "reports";
+        public const string Budgets = "budgets";
     }
 }

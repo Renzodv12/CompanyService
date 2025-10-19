@@ -1,6 +1,7 @@
 using CompanyService.Core.Feature.Commands.Product;
 using CompanyService.Core.Feature.Querys.Product;
 using CompanyService.Core.Models.Product;
+using CompanyService.Core.Attributes;
 using CompanyService.WebApi.Extensions;
 using MediatR;
 using FluentValidation;

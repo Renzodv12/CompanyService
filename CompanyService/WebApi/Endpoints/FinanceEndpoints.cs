@@ -149,6 +149,44 @@ namespace CompanyService.WebApi.Endpoints
                 .Produces<BudgetComparisonDto>(StatusCodes.Status200OK)
                 .WithOpenApi();
 
+            // Chart of Accounts Endpoints
+            app.MapGet("/companies/{companyId:guid}/finance/chart-of-accounts", GetChartOfAccounts)
+                .WithName("GetChartOfAccounts")
+                .WithTags("Finance")
+                .RequireAuthorization()
+                .Produces<List<ChartOfAccountsDto>>(StatusCodes.Status200OK)
+                .WithOpenApi();
+
+            app.MapPost("/companies/{companyId:guid}/finance/chart-of-accounts", CreateChartOfAccounts)
+                .WithName("CreateChartOfAccounts")
+                .WithTags("Finance")
+                .RequireAuthorization()
+                .Accepts<CreateChartOfAccountsRequest>("application/json")
+                .Produces<ChartOfAccountsDto>(StatusCodes.Status201Created)
+                .WithOpenApi();
+
+            app.MapGet("/companies/{companyId:guid}/finance/chart-of-accounts/{id:guid}", GetChartOfAccountsById)
+                .WithName("GetChartOfAccountsById")
+                .WithTags("Finance")
+                .RequireAuthorization()
+                .Produces<ChartOfAccountsDto>(StatusCodes.Status200OK)
+                .WithOpenApi();
+
+            app.MapPut("/companies/{companyId:guid}/finance/chart-of-accounts/{id:guid}", UpdateChartOfAccounts)
+                .WithName("UpdateChartOfAccounts")
+                .WithTags("Finance")
+                .RequireAuthorization()
+                .Accepts<UpdateChartOfAccountsRequest>("application/json")
+                .Produces<ChartOfAccountsDto>(StatusCodes.Status200OK)
+                .WithOpenApi();
+
+            app.MapDelete("/companies/{companyId:guid}/finance/chart-of-accounts/{id:guid}", DeleteChartOfAccounts)
+                .WithName("DeleteChartOfAccounts")
+                .WithTags("Finance")
+                .RequireAuthorization()
+                .Produces(StatusCodes.Status200OK)
+                .WithOpenApi();
+
             // Sales Financial Summary Endpoint
             app.MapGet("/companies/{companyId:guid}/finance/sales-summary", GetSalesFinancialSummary)
                 .WithName("GetSalesFinancialSummary")
@@ -438,11 +476,13 @@ namespace CompanyService.WebApi.Endpoints
                 Month = request.StartDate.Month,
                 BudgetedAmount = request.TotalAmount,
                 Category = "General",
+                Type = request.Type ?? "Monthly",
                 Notes = "",
                 CompanyId = companyId,
                 UserId = Guid.Parse(claims.UserId!),
                 BudgetLines = request.Lines.Select(line => new CompanyService.Application.Commands.Finance.CreateBudgetLineCommand
                 {
+                    AccountId = line.AccountId,
                     Description = $"Account {line.AccountId}",
                     BudgetedAmount = line.Amount,
                     Category = "General",
@@ -822,6 +862,160 @@ namespace CompanyService.WebApi.Endpoints
             {
                 var result = await mediator.Send(command);
                 return Results.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        }
+
+        // Chart of Accounts Endpoint Methods
+        private static async Task<IResult> GetChartOfAccounts(
+            Guid companyId,
+            HttpContext httpContext,
+            ISender mediator,
+            bool? isActive = null,
+            string? type = null)
+        {
+            var claims = httpContext.ExtractTokenClaims();
+            if (claims.UserId is null)
+                return Results.Unauthorized();
+
+            var query = new GetChartOfAccountsQuery
+            {
+                CompanyId = companyId,
+                UserId = Guid.Parse(claims.UserId!),
+                IsActive = isActive,
+                Type = type
+            };
+
+            try
+            {
+                var result = await mediator.Send(query);
+                return Results.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        }
+
+        private static async Task<IResult> CreateChartOfAccounts(
+            Guid companyId,
+            CreateChartOfAccountsRequest request,
+            HttpContext httpContext,
+            ISender mediator)
+        {
+            var claims = httpContext.ExtractTokenClaims();
+            if (claims.UserId is null)
+                return Results.Unauthorized();
+
+            var command = new CreateChartOfAccountsCommand
+            {
+                Code = request.Code,
+                Name = request.Name,
+                Type = request.Type,
+                ParentId = request.ParentId,
+                Description = request.Description,
+                CompanyId = companyId,
+                UserId = Guid.Parse(claims.UserId!)
+            };
+
+            try
+            {
+                var result = await mediator.Send(command);
+                return Results.Created($"/companies/{companyId}/finance/chart-of-accounts/{result.Id}", result);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        }
+
+        private static async Task<IResult> GetChartOfAccountsById(
+            Guid companyId,
+            Guid id,
+            HttpContext httpContext,
+            ISender mediator)
+        {
+            var claims = httpContext.ExtractTokenClaims();
+            if (claims.UserId is null)
+                return Results.Unauthorized();
+
+            var query = new GetChartOfAccountsByIdQuery
+            {
+                Id = id,
+                CompanyId = companyId,
+                UserId = Guid.Parse(claims.UserId!)
+            };
+
+            try
+            {
+                var result = await mediator.Send(query);
+                return Results.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        }
+
+        private static async Task<IResult> UpdateChartOfAccounts(
+            Guid companyId,
+            Guid id,
+            UpdateChartOfAccountsRequest request,
+            HttpContext httpContext,
+            ISender mediator)
+        {
+            var claims = httpContext.ExtractTokenClaims();
+            if (claims.UserId is null)
+                return Results.Unauthorized();
+
+            var command = new UpdateChartOfAccountsCommand
+            {
+                Id = id,
+                Code = request.Code,
+                Name = request.Name,
+                Type = request.Type,
+                ParentId = request.ParentId,
+                IsActive = request.IsActive,
+                Description = request.Description,
+                CompanyId = companyId,
+                UserId = Guid.Parse(claims.UserId!)
+            };
+
+            try
+            {
+                var result = await mediator.Send(command);
+                return Results.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        }
+
+        private static async Task<IResult> DeleteChartOfAccounts(
+            Guid companyId,
+            Guid id,
+            HttpContext httpContext,
+            ISender mediator)
+        {
+            var claims = httpContext.ExtractTokenClaims();
+            if (claims.UserId is null)
+                return Results.Unauthorized();
+
+            var command = new DeleteChartOfAccountsCommand
+            {
+                Id = id,
+                CompanyId = companyId,
+                UserId = Guid.Parse(claims.UserId!)
+            };
+
+            try
+            {
+                var result = await mediator.Send(command);
+                return Results.Ok(new { success = result });
             }
             catch (Exception ex)
             {

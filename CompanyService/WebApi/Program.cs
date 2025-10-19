@@ -45,6 +45,7 @@ app.MapApprovalEndpoints();
 app.MapCompanyManagementEndpoints();
 app.MapFinanceEndpoints();
 app.MapDynamicReportsEndpoints();
+app.MapCacheManagementEndpoints();
 // Mapear endpoints de roles
 app.MapRoleEndpoints();
 

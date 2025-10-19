@@ -11,6 +11,7 @@ namespace CompanyService.Application.Commands.Finance
         public int Month { get; set; }
         public decimal BudgetedAmount { get; set; }
         public string? Category { get; set; }
+        public string? Type { get; set; } = "Monthly";
         public string? Notes { get; set; }
         public Guid CompanyId { get; set; }
         public Guid UserId { get; set; }
@@ -19,6 +20,7 @@ namespace CompanyService.Application.Commands.Finance
 
     public class CreateBudgetLineCommand
     {
+        public Guid AccountId { get; set; }
         public string Description { get; set; } = string.Empty;
         public decimal BudgetedAmount { get; set; }
         public string? Category { get; set; }

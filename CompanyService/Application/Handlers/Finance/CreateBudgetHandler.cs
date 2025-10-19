@@ -24,11 +24,13 @@ namespace CompanyService.Application.Handlers.Finance
                 Month = request.Month,
                 BudgetedAmount = request.BudgetedAmount,
                 Category = request.Category,
+                Type = request.Type,
                 Notes = request.Notes,
                 CompanyId = request.CompanyId,
                 UserId = request.UserId,
                 BudgetLines = request.BudgetLines.Select(bl => new CreateBudgetLineDto
                 {
+                    AccountId = bl.AccountId,
                     Description = bl.Description,
                     BudgetedAmount = bl.BudgetedAmount,
                     Category = bl.Category,

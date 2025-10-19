@@ -13,6 +13,8 @@ namespace CompanyService.Core.Entities
         public decimal VariancePercentage => BudgetedAmount != 0 ? (Variance / BudgetedAmount) * 100 : 0;
         public Guid? AccountId { get; set; } // Cuenta contable relacionada
         public string Category { get; set; }
+        public string Type { get; set; } = "Monthly"; // Annual, Quarterly, Monthly, Project
+        public int Status { get; set; } = 1; // 1=Draft, 2=Active, 3=Completed, 4=Cancelled
         public bool IsActive { get; set; } = true;
         public string Notes { get; set; }
         public Guid CompanyId { get; set; }

@@ -18,6 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
+using MediatR;
 
 namespace CompanyService.Core
 {
@@ -76,6 +77,8 @@ namespace CompanyService.Core
             services.AddScoped<IReportService, ReportService>();
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddSingleton<IRedisService, RedisService>();
+            services.AddScoped<ICacheService, CacheService>();
+            services.AddScoped<ICacheInvalidationService, CacheInvalidationService>();
             services.AddScoped<IMenuService, MenuService>();
             
             // InventoryService Services
@@ -102,6 +105,9 @@ namespace CompanyService.Core
             services.AddScoped<ICompanyManagementService, CompanyManagementService>();
             
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+            
+            // Registrar el interceptor de cache como comportamiento de pipeline
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(CompanyService.Core.Interceptors.CacheInvalidationInterceptor<,>));
             services.AddHttpContextAccessor();
 
             // Registrar TODOS los validadores

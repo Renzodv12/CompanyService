@@ -27,6 +27,9 @@ namespace CompanyService.Core.DTOs.Finance
         [StringLength(100)]
         public string? Category { get; set; }
 
+        [StringLength(50)]
+        public string? Type { get; set; } = "Monthly";
+
         [StringLength(500)]
         public string? Notes { get; set; }
 

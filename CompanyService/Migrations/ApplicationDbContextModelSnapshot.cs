@@ -131,7 +131,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("AccountsPayables");
+                    b.ToTable("AccountsPayables", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.AccountsPayablePayment", b =>
@@ -175,7 +175,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("AccountsPayablePayments");
+                    b.ToTable("AccountsPayablePayments", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.AccountsReceivable", b =>
@@ -237,7 +237,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("SaleId");
 
-                    b.ToTable("AccountsReceivables");
+                    b.ToTable("AccountsReceivables", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.AccountsReceivablePayment", b =>
@@ -281,7 +281,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("AccountsReceivablePayments");
+                    b.ToTable("AccountsReceivablePayments", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Approval", b =>
@@ -308,9 +308,6 @@ namespace CompanyService.Migrations
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
@@ -340,9 +337,6 @@ namespace CompanyService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("LastModifiedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
@@ -355,9 +349,6 @@ namespace CompanyService.Migrations
                     b.Property<string>("RejectionReason")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
-
-                    b.Property<DateTime>("RequestDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("RequestedBy")
                         .HasColumnType("uuid");
@@ -381,7 +372,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("RequestedBy");
 
-                    b.ToTable("Approvals");
+                    b.ToTable("Approvals", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.ApprovalLevel", b =>
@@ -395,9 +386,6 @@ namespace CompanyService.Migrations
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -416,9 +404,6 @@ namespace CompanyService.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime>("LastModifiedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Level")
                         .HasColumnType("integer");
@@ -446,9 +431,6 @@ namespace CompanyService.Migrations
                     b.Property<int>("RequiredApprovals")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("RequiresAllApprovers")
-                        .HasColumnType("boolean");
-
                     b.Property<bool>("RequiresApproval")
                         .HasColumnType("boolean");
 
@@ -463,7 +445,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("ModifiedBy");
 
-                    b.ToTable("ApprovalLevels");
+                    b.ToTable("ApprovalLevels", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.ApprovalLevelUser", b =>
@@ -521,7 +503,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ApprovalLevelUsers");
+                    b.ToTable("ApprovalLevelUsers", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.AuditLog", b =>
@@ -587,7 +569,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.BankAccount", b =>
@@ -643,7 +625,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("BankAccounts");
+                    b.ToTable("BankAccounts", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.BankTransaction", b =>
@@ -704,7 +686,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("BankTransactions");
+                    b.ToTable("BankTransactions", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Batch", b =>
@@ -771,7 +753,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("Batches");
+                    b.ToTable("Batches", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Branch", b =>
@@ -847,7 +829,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("ManagerId");
 
-                    b.ToTable("Branches");
+                    b.ToTable("Branches", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Budget", b =>
@@ -908,7 +890,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Budgets");
+                    b.ToTable("Budgets", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.BudgetLine", b =>
@@ -956,7 +938,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("BudgetId");
 
-                    b.ToTable("BudgetLines");
+                    b.ToTable("BudgetLines", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Campaign", b =>
@@ -1052,7 +1034,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Campaigns");
+                    b.ToTable("Campaigns", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.CampaignLead", b =>
@@ -1096,7 +1078,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("LeadId");
 
-                    b.ToTable("CampaignLeads");
+                    b.ToTable("CampaignLeads", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.CashFlow", b =>
@@ -1169,7 +1151,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("RelatedBankAccountId");
 
-                    b.ToTable("CashFlows");
+                    b.ToTable("CashFlows", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Company", b =>
@@ -1270,7 +1252,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("CreatedBy");
 
-                    b.ToTable("CompanyBackups");
+                    b.ToTable("CompanyBackups", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.CompanyDocument", b =>
@@ -1351,14 +1333,16 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("UploadedBy");
 
-                    b.ToTable("CompanyDocuments");
+                    b.ToTable("CompanyDocuments", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.CompanyMenuConfiguration", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
@@ -1373,8 +1357,8 @@ namespace CompanyService.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
-                    b.Property<Guid>("MenuId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("MenuId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -1390,7 +1374,7 @@ namespace CompanyService.Migrations
                     b.HasIndex("CompanyId", "MenuId")
                         .IsUnique();
 
-                    b.ToTable("CompanyMenuConfigurations");
+                    b.ToTable("CompanyMenuConfigurations", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.CompanySettings", b =>
@@ -1498,7 +1482,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanySettings");
+                    b.ToTable("CompanySettings", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Customer", b =>
@@ -1664,7 +1648,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CustomerTrackings");
+                    b.ToTable("CustomerTrackings", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Department", b =>
@@ -1729,7 +1713,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("ParentDepartmentId");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.DynamicReportExecution", b =>
@@ -1783,7 +1767,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("ReportDefinitionId");
 
-                    b.ToTable("DynamicReportExecutions");
+                    b.ToTable("DynamicReportExecutions", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Event", b =>
@@ -1979,7 +1963,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("GoodsReceipts");
+                    b.ToTable("GoodsReceipts", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.GoodsReceiptItem", b =>
@@ -2070,7 +2054,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("GoodsReceiptItems");
+                    b.ToTable("GoodsReceiptItems", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.JournalEntry", b =>
@@ -2208,14 +2192,16 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Leads");
+                    b.ToTable("Leads", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Menu", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -2243,8 +2229,8 @@ namespace CompanyService.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Route")
                         .HasMaxLength(200)
@@ -2261,7 +2247,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Menus");
+                    b.ToTable("Menus", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Opportunity", b =>
@@ -2362,7 +2348,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("LeadId");
 
-                    b.ToTable("Opportunities");
+                    b.ToTable("Opportunities", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Permission", b =>
@@ -2438,7 +2424,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("PhysicalInventories");
+                    b.ToTable("PhysicalInventories", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.PhysicalInventoryItem", b =>
@@ -2487,7 +2473,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("PhysicalInventoryItem");
+                    b.ToTable("PhysicalInventoryItem", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Product", b =>
@@ -2825,7 +2811,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("PurchaseOrders");
+                    b.ToTable("PurchaseOrders", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.PurchaseOrderItem", b =>
@@ -2881,7 +2867,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("PurchaseOrderId");
 
-                    b.ToTable("PurchaseOrderItems");
+                    b.ToTable("PurchaseOrderItems", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Quotation", b =>
@@ -2971,7 +2957,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("Quotations");
+                    b.ToTable("Quotations", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.QuotationItem", b =>
@@ -3036,7 +3022,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("QuotationId");
 
-                    b.ToTable("QuotationItems");
+                    b.ToTable("QuotationItems", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.ReorderAlert", b =>
@@ -3071,7 +3057,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("ReorderPointId");
 
-                    b.ToTable("ReorderAlert");
+                    b.ToTable("ReorderAlert", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.ReorderPoint", b =>
@@ -3134,7 +3120,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("ReorderPoints");
+                    b.ToTable("ReorderPoints", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Report", b =>
@@ -3224,7 +3210,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ReportAuditLogs");
+                    b.ToTable("ReportAuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.ReportDefinition", b =>
@@ -3272,7 +3258,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("ReportDefinitions");
+                    b.ToTable("ReportDefinitions", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.ReportExecution", b =>
@@ -3365,7 +3351,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("ReportDefinitionId");
 
-                    b.ToTable("ReportFields");
+                    b.ToTable("ReportFields", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.ReportFilter", b =>
@@ -3416,7 +3402,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("ReportDefinitionId");
 
-                    b.ToTable("ReportFilters");
+                    b.ToTable("ReportFilters", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Role", b =>
@@ -3427,10 +3413,6 @@ namespace CompanyService.Migrations
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -3490,6 +3472,7 @@ namespace CompanyService.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ElectronicInvoiceId")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
@@ -4056,7 +4039,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.UserCompany", b =>
@@ -4150,7 +4133,7 @@ namespace CompanyService.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Warehouses");
+                    b.ToTable("Warehouses", (string)null);
                 });
 
             modelBuilder.Entity("CompanyService.Core.Entities.Account", b =>
