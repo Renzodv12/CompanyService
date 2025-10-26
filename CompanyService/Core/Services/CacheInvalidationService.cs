@@ -141,5 +141,9 @@ namespace CompanyService.Core.Services
         public const string Inventory = "inventory";
         public const string Reports = "reports";
         public const string Budgets = "budgets";
+        public const string Restaurants = "restaurants";
+        public const string RestaurantTables = "restaurant-tables";
+        public const string RestaurantMenus = "restaurant-menus";
+        public const string RestaurantOrders = "restaurant-orders";
     }
 }

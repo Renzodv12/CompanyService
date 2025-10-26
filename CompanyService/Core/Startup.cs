@@ -104,6 +104,9 @@ namespace CompanyService.Core
             // Company Management Services
             services.AddScoped<ICompanyManagementService, CompanyManagementService>();
             
+            // Restaurant Services
+            services.AddScoped<IRestaurantService, RestaurantService>();
+            
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             
             // Registrar el interceptor de cache como comportamiento de pipeline

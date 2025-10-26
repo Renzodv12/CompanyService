@@ -5,7 +5,7 @@ namespace CompanyService.Core.Entities
     public class Menu
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         
         [Required]
         [MaxLength(100)]
@@ -20,7 +20,7 @@ namespace CompanyService.Core.Entities
         [MaxLength(500)]
         public string? Description { get; set; }
         
-        public Guid? ParentId { get; set; }
+        public int? ParentId { get; set; }
         
         public int Order { get; set; }
         

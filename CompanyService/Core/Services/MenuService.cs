@@ -1,6 +1,7 @@
 using CompanyService.Core.Entities;
 using CompanyService.Core.Interfaces;
 using CompanyService.Core.Models.Menu;
+using CompanyService.Core.DTOs.Menu;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -72,21 +73,43 @@ namespace CompanyService.Core.Services
             }
         }
 
-        public async Task<List<CompanyMenuConfigurationDto>> GetCompanyMenuConfigurationAsync(Guid companyId)
+        public async Task<CompanyMenuConfigurationDto> GetCompanyMenuConfigurationAsync(Guid companyId)
         {
             try
             {
-                var allConfigurations = await _unitOfWork.Repository<CompanyMenuConfiguration>().GetAllAsync();
-                var configurations = allConfigurations.Where(cmc => cmc.CompanyId == companyId).ToList();
+                // Get company information
+                var companies = await _unitOfWork.Repository<Company>().WhereAsync(c => c.Id == companyId);
+                var company = companies.FirstOrDefault();
 
-                return configurations.Select(cmc => new CompanyMenuConfigurationDto
+                if (company == null)
                 {
-                    Id = cmc.Id,
-                    CompanyId = cmc.CompanyId,
-                    MenuId = cmc.MenuId,
-                    IsEnabled = cmc.IsEnabled,
-                    Menu = new MenuDto { Id = cmc.MenuId, Name = "", Icon = "", Route = "", Description = "", ParentId = null, Order = 0, IsActive = true }
-                }).ToList();
+                    throw new ArgumentException($"Company with ID {companyId} not found");
+                }
+
+                // Get all menus
+                var allMenus = await _unitOfWork.Repository<Menu>().WhereAsync(m => m.IsActive);
+                var menus = allMenus.ToList();
+
+                // Get company menu configurations
+                var configurations = await _unitOfWork.Repository<CompanyMenuConfiguration>().WhereAsync(cmc => cmc.CompanyId == companyId);
+                var companyConfigurations = configurations.ToList();
+
+                // Create a dictionary for quick lookup
+                var configurationDict = companyConfigurations.ToDictionary(c => c.MenuId, c => c.IsEnabled);
+
+                // Build menu hierarchy
+                var menuDtos = menus
+                    .Where(m => m.ParentId == null) // Only root menus
+                    .OrderBy(m => m.Order)
+                    .Select(m => MapMenuToDto(m, menus, configurationDict))
+                    .ToList();
+
+                return new CompanyMenuConfigurationDto
+                {
+                    CompanyId = company.Id,
+                    CompanyName = company.Name,
+                    Menus = menuDtos
+                };
             }
             catch (Exception ex)
             {
@@ -95,7 +118,7 @@ namespace CompanyService.Core.Services
             }
         }
 
-        public async System.Threading.Tasks.Task UpdateCompanyMenuConfigurationAsync(UpdateCompanyMenuConfigurationRequest request)
+        public async System.Threading.Tasks.Task UpdateCompanyMenuConfigurationAsync(UpdateMenuConfigurationRequest request)
         {
             try
             {
@@ -212,6 +235,33 @@ namespace CompanyService.Core.Services
                 Order = menu.Order,
                 IsActive = menu.IsActive
             };
+        }
+
+        private MenuConfigurationDto MapMenuToDto(Menu menu, List<Menu> allMenus, Dictionary<int, bool> configurationDict)
+        {
+            var dto = new MenuConfigurationDto
+            {
+                Id = menu.Id,
+                Name = menu.Name,
+                Icon = menu.Icon,
+                Route = menu.Route,
+                Description = menu.Description,
+                ParentId = menu.ParentId,
+                Order = menu.Order,
+                IsActive = menu.IsActive,
+                IsEnabled = configurationDict.GetValueOrDefault(menu.Id, true) // Default to enabled if not configured
+            };
+
+            // Add children
+            var children = allMenus
+                .Where(m => m.ParentId == menu.Id)
+                .OrderBy(m => m.Order)
+                .Select(m => MapMenuToDto(m, allMenus, configurationDict))
+                .ToList();
+
+            dto.Children = children;
+
+            return dto;
         }
     }
 }

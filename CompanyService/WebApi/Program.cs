@@ -11,7 +11,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCoreServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -46,6 +45,8 @@ app.MapCompanyManagementEndpoints();
 app.MapFinanceEndpoints();
 app.MapDynamicReportsEndpoints();
 app.MapCacheManagementEndpoints();
+app.MapRestaurantEndpoints();
+app.MapMenuConfigurationEndpoints();
 // Mapear endpoints de roles
 app.MapRoleEndpoints();
 

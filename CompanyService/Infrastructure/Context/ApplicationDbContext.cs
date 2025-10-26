@@ -1,4 +1,5 @@
 using CompanyService.Core.Entities;
+using CompanyService.Core.Entities.Restaurant;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanyService.Infrastructure.Context
@@ -73,6 +74,13 @@ namespace CompanyService.Infrastructure.Context
         public DbSet<Budget> Budgets => Set<Budget>();
         public DbSet<BudgetLine> BudgetLines => Set<BudgetLine>();
         public DbSet<ChartOfAccounts> ChartOfAccounts => Set<ChartOfAccounts>();
+        
+        // Restaurant Module
+        public DbSet<Restaurant> Restaurants => Set<Restaurant>();
+        public DbSet<RestaurantTable> RestaurantTables => Set<RestaurantTable>();
+        public DbSet<RestaurantMenu> RestaurantMenus => Set<RestaurantMenu>();
+        public DbSet<RestaurantMenuItem> RestaurantMenuItems => Set<RestaurantMenuItem>();
+        public DbSet<RestaurantOrder> RestaurantOrders => Set<RestaurantOrder>();
         
         // Advanced Inventory Module
         public DbSet<Warehouse> Warehouses => Set<Warehouse>();
