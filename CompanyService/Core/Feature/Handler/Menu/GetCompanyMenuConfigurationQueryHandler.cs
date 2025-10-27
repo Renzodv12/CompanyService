@@ -4,6 +4,7 @@ using CompanyService.Core.Interfaces;
 using CompanyService.Core.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using CompanyService.Core.Services;
 using CompanyService.Core.Models.Cache;
 
@@ -15,14 +16,18 @@ namespace CompanyService.Core.Feature.Handler.Menu
         private readonly ILogger<GetCompanyMenuConfigurationQueryHandler> _logger;
         private readonly ICacheService _cacheService;
 
+        private readonly IConfiguration _configuration;
+
         public GetCompanyMenuConfigurationQueryHandler(
             IUnitOfWork unitOfWork,
             ILogger<GetCompanyMenuConfigurationQueryHandler> logger,
-            ICacheService cacheService)
+            ICacheService cacheService,
+            IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _cacheService = cacheService;
+            _configuration = configuration;
         }
 
         public async Task<CompanyMenuConfigurationDto> Handle(GetCompanyMenuConfigurationQuery request, CancellationToken cancellationToken)
@@ -80,11 +85,14 @@ namespace CompanyService.Core.Feature.Handler.Menu
                     Menus = menuDtos
                 };
 
-                // Cache the result for 10 minutes
-                await _cacheService.SetAsync(cacheKey, result, new CachePolicy 
-                { 
-                    Expiry = TimeSpan.FromMinutes(10) 
-                });
+                // Get cache expiry from environment variable or configuration, default to 120 minutes
+                var cacheExpiryMinutes = CacheHelper.GetCacheExpiryMinutes(_configuration, "MenuConfigurationExpiryMinutes", 120);
+                
+                _logger.LogInformation("Caching menu configuration for company {CompanyId} with expiry: {ExpiryMinutes} minutes", 
+                    request.CompanyId, cacheExpiryMinutes);
+
+                // Cache the result
+                await _cacheService.SetAsync(cacheKey, result, CacheHelper.CreatePolicy(cacheExpiryMinutes));
 
                 return result;
             }

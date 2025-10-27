@@ -31,13 +31,19 @@ namespace CompanyService.Core.Services
         {
             _redisService = redisService;
             _logger = logger;
+            
+            // Get cache expiry from environment variable or configuration, default to 60 minutes
+            var defaultExpiryMinutes = int.Parse(configuration["Cache:DefaultExpiryMinutes"] ?? Environment.GetEnvironmentVariable("CACHE_DEFAULT_EXPIRY_MINUTES") ?? "60");
+            
             _config = new CacheConfiguration
             {
-                DefaultExpiry = TimeSpan.FromMinutes(30),
+                DefaultExpiry = TimeSpan.FromMinutes(defaultExpiryMinutes),
                 MaxKeyLength = 200,
                 EnableCompression = true,
                 EnableMetrics = true
             };
+            
+            _logger.LogInformation("CacheService initialized with default expiry: {ExpiryMinutes} minutes", defaultExpiryMinutes);
         }
 
         public async Task<T?> GetAsync<T>(string key, Func<Task<T?>> fallback = null, CachePolicy? policy = null)
